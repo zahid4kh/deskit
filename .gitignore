@@ -21,6 +21,7 @@ out/
 .run
 deskit/.run
 settings.gradle.kts
+gradle
 
 ### Kotlin ###
 .kotlin
