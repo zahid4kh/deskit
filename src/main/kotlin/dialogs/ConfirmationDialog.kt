@@ -2,7 +2,7 @@ package dialogs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -12,6 +12,22 @@ import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 
+/**
+ * Displays a modal confirmation dialog with Cancel and OK buttons.
+ *
+ * This dialog is used when an action requires user confirmation before proceeding.
+ * The dialog provides separate callbacks for confirm and cancel actions, allowing
+ * different behaviors for each button.
+ *
+ * @param title The title text displayed in the dialog window's title bar.
+ * @param message The confirmation message displayed to the user.
+ * @param onConfirm Callback function invoked when the user clicks the OK button.
+ * @param onCancel Callback function invoked when the user clicks Cancel or the X button.
+ * @param onClose Callback function invoked when the dialog is closed via the window's X button.
+ *                Defaults to calling onCancel.
+ *
+ * @sample ConfirmationDialogSample
+ */
 @Composable
 fun ConfirmationDialog(
     title: String = "Confirmation",
@@ -61,5 +77,37 @@ fun ConfirmationDialog(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ConfirmationDialogSample(){
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Button(
+            onClick = {
+                showConfirmationDialog = true
+                text = "Confirmation dialog is shown"
+            }
+        ) {
+            Text("Show Confirmation Dialog")
+        }
+
+        Text(text)
+    }
+
+
+    if(showConfirmationDialog){
+        ConfirmationDialog(
+            onClose = {showConfirmationDialog = false; text = "Confirmation dialog was closed"},
+            onConfirm = {showConfirmationDialog = false; text = "Confirm was clicked"},
+            onCancel = {showConfirmationDialog = false; text = "Cancel was clicked"}
+        )
     }
 }
