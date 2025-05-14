@@ -8,13 +8,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.TextFormat
+import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
+import androidx.compose.material.icons.automirrored.filled.TextSnippet
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
@@ -34,7 +38,11 @@ fun FileChooserDialog(
     val files = remember(currentDir) {
         currentDir.listFiles()
             ?.filter {
-                !it.name.startsWith(".") && (it.isDirectory || allowedExtensions == null || allowedExtensions.any { ext -> it.name.endsWith(ext) })
+                !it.name.startsWith(".") && (it.isDirectory ||
+                        allowedExtensions == null ||
+                        allowedExtensions.any {
+                            ext -> it.name.endsWith(ext, ignoreCase = true)
+                        })
             }
             ?.sortedWith(compareBy({ !it.isDirectory }, { it.name }))
             ?: emptyList()
@@ -74,10 +82,10 @@ fun FileChooserDialog(
                                 .clip(MaterialTheme.shapes.medium)
                                 .clickable { currentDir = dir }
                                 .padding(8.dp),
-                            style = MaterialTheme.typography.labelLarge
+                            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
                         )
                         if (index != pathSegments.lastIndex) {
-                            Text("/", style = MaterialTheme.typography.labelLarge)
+                            Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
                         }
                     }
                 }
@@ -95,8 +103,9 @@ fun FileChooserDialog(
                                 .padding(9.dp)
                         ) {
                             Icon(
-                                imageVector = if (file.isDirectory) Icons.Default.Folder else Icons.Default.TextFormat,
-                                contentDescription = null
+                                imageVector = getFileIcon(file),
+                                contentDescription = null,
+                                tint = if (file.isDirectory) MaterialTheme.colorScheme.primary else LocalContentColor.current
                             )
                             Spacer(Modifier.width(8.dp))
                             Text(file.name)
@@ -111,5 +120,46 @@ fun FileChooserDialog(
                 }
             }
         }
+    }
+}
+
+private fun getFileIcon(file: File): ImageVector {
+    if (file.isDirectory) return Icons.Default.Folder
+
+    val extension = file.extension.lowercase()
+    return when (extension) {
+        // Images
+        "png", "jpg", "jpeg", "gif", "bmp", "webp", "svg" -> Icons.Default.Image
+
+        // Docs
+        "pdf" -> Icons.Default.PictureAsPdf
+        "doc", "docx" -> Icons.Default.Description
+        "xls", "xlsx" -> Icons.Default.TableChart
+        "ppt", "pptx" -> Icons.Default.Slideshow
+        "txt" -> Icons.AutoMirrored.Filled.TextSnippet
+        "md" -> Icons.AutoMirrored.Filled.Article
+
+        // Code
+        "kt", "java", "js", "ts", "py", "cpp", "c", "cs", "php", "rb", "go", "rs" -> Icons.Default.Code
+        "html", "htm" -> Icons.Default.Html
+        "css" -> Icons.Default.Css
+        "json", "xml", "yaml", "yml" -> Icons.Default.DataObject
+
+        // Archive
+        "zip", "rar", "7z", "tar", "gz" -> Icons.Default.Archive
+
+        // Audio
+        "mp3", "wav", "flac", "aac", "ogg" -> Icons.Default.AudioFile
+
+        // Video
+        "mp4", "avi", "mkv", "mov", "wmv", "flv" -> Icons.Default.VideoFile
+
+        // Fonts
+        "ttf", "otf", "woff", "woff2" -> Icons.Default.FontDownload
+
+        // Executable
+        "exe", "app", "deb", "rpm" -> Icons.Default.Storage
+
+        else -> Icons.AutoMirrored.Filled.InsertDriveFile
     }
 }
