@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    `java-library`
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
 }
