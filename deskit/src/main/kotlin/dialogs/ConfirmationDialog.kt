@@ -1,14 +1,11 @@
 package dialogs
 
-
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
@@ -17,51 +14,50 @@ import androidx.compose.ui.window.rememberDialogState
 
 @Composable
 fun ConfirmationDialog(
-    title: String = "Title",
-    onClose: () -> Unit
-){
-    val fixedWidth = 450.dp
-    val fixedHeight = 230.dp
-
+    title: String = "Confirmation",
+    message: String = "Please confirm to proceed",
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+    onClose: () -> Unit = onCancel
+) {
     val dialogState = rememberDialogState(
-        size = DpSize(fixedWidth, fixedHeight),
+        size = DpSize(450.dp, 230.dp),
         position = WindowPosition(Alignment.Center)
     )
 
     DialogWindow(
         title = title,
         state = dialogState,
-        onCloseRequest = {onClose()},
+        onCloseRequest = onClose,
         resizable = false
     ) {
-
-        Surface(
-            modifier = Modifier.fillMaxSize()
-        ){
-            Box(
+        Surface(modifier = Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(12.dp),
-                contentAlignment = Alignment.Center
-            ){
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(8.dp))
+
                 Text(
-                    text = "Please confirm to proceed",
-                    modifier = Modifier.offset(y = (-30).dp),
-                    overflow = TextOverflow.Ellipsis
+                    text = message,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
                 )
 
                 Row(
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                ){
-                    Button(
-                        onClick = {onClose()}
-                    ){
-                        Text(
-                            text = "Cancel"
-                        )
+                    modifier = Modifier.align(Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TextButton(onClick = onCancel) {
+                        Text("Cancel")
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = { onClose() }) { Text("OK") }
+                    Button(onClick = onConfirm) {
+                        Text("OK")
+                    }
                 }
             }
         }
