@@ -19,9 +19,6 @@ out/
 /preview/.run
 .idea
 .run
-deskit/.run
-settings.gradle.kts
-gradle
 
 ### Kotlin ###
 .kotlin
