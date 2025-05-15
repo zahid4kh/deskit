@@ -21,6 +21,21 @@ import androidx.compose.ui.window.rememberDialogState
 import java.awt.Dimension
 import java.io.File
 
+/**
+ * Displays a folder selection dialog with directory navigation and breadcrumb trail.
+ *
+ * This dialog allows users to browse and select folders from the file system. It shows
+ * only directories, hiding files and system folders (those starting with ".").
+ *
+ * @param title The title text displayed in the dialog window's title bar. Defaults to "Choose Folder".
+ * @param startDirectory The initial directory to display when the dialog opens.
+ *                       Defaults to the user's Downloads folder.
+ * @param onFolderSelected Callback function invoked with the selected File (directory) when
+ *                         the user clicks Choose.
+ * @param onCancel Callback function invoked when the user cancels the operation.
+ *
+ * @sample FolderChooserDialogSample
+ */
 @Composable
 fun FolderChooserDialog(
     title: String = "Choose Folder",
