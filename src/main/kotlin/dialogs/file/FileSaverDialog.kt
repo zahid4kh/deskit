@@ -24,6 +24,26 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 import java.io.File
 
+/**
+ * Displays a file save dialog with directory navigation, folder creation, and file naming capabilities.
+ *
+ * This dialog allows users to navigate through the file system, create new folders, and specify
+ * a filename for saving. It includes file existence checking and animated folder creation UI.
+ *
+ * @param title The title text displayed in the dialog window's title bar. Defaults to "Save As".
+ * @param suggestedFileName The initial filename to populate in the text field. Can be empty.
+ * @param extension The file extension to append to the saved file (e.g., ".txt", ".pdf").
+ * @param onSave Callback function invoked with the selected File when the user clicks Save.
+ * @param onCancel Callback function invoked when the user cancels the operation.
+ *
+ * Features:
+ * - Directory navigation with clickable breadcrumb trail
+ * - New folder creation with animated UI
+ * - File existence validation
+ * - Back button for parent directory navigation
+ *
+ * @sample FileSaverDialogSample
+ */
 @Composable
 fun FileSaverDialog(
     title: String = "Save As",
@@ -235,6 +255,43 @@ fun FileSaverDialog(
                     Text("OK")
                 }
             }
+        )
+    }
+}
+
+@Composable
+fun FileSaverDialogSample(){
+    var showFileSaverDialog by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Button(
+            onClick = {
+                showFileSaverDialog = true
+                text = "File saver dialog is shown"
+            }
+        ) {
+            Text("Show File Saver Dialog")
+        }
+
+        Text(text)
+    }
+
+
+    if(showFileSaverDialog){
+        FileSaverDialog(
+            title = "Save As",
+            suggestedFileName = "newfile",
+            extension = ".md",
+            onSave = {
+                it.writeText("# Kotlin is fun")
+                showFileSaverDialog = false; text = "File was saved and dialog was closed"
+            },
+            onCancel = { showFileSaverDialog = false; text = "File saver dialog was closed" }
         )
     }
 }
