@@ -259,6 +259,26 @@ fun FileSaverDialog(
     }
 }
 
+
+/**
+ * A sample composable function demonstrating the usage of the [FileSaverDialog].
+ *
+ * This sample displays a button that, when clicked, shows a [FileSaverDialog].
+ * The dialog is pre-configured with a title ("Save As"), a suggested filename ("newfile"),
+ * and a file extension (".md").
+ *
+ * It also features a text field that updates to reflect the state of the dialog:
+ * - "File saver dialog is shown" when the dialog is opened.
+ * - "File was saved and dialog was closed" when a file is successfully saved.
+ *   In this sample, upon saving, "# Kotlin is fun" is written to the chosen file.
+ * - "File saver dialog was closed" when the dialog is cancelled.
+ *
+ * This serves as a practical example of how to integrate and manage the
+ * [FileSaverDialog], including handling file saving and cancellation events,
+ * within a Composable UI.
+ *
+ * @sample dialogs.file.FileSaverDialogSample
+ */
 @Composable
 fun FileSaverDialogSample(){
     var showFileSaverDialog by remember { mutableStateOf(false) }
