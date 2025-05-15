@@ -59,3 +59,33 @@ fun InfoDialog(
         }
     }
 }
+
+@Composable
+fun InfoDialogSample(){
+    var showInfoDialog by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Button(
+            onClick = {
+                showInfoDialog = true
+                text = "Info dialog is shown"
+            }
+        ) {
+            Text("Show Info Dialog")
+        }
+
+        Text(text)
+    }
+
+
+    if (showInfoDialog){
+        InfoDialog(
+            onClose = { showInfoDialog = false; text = "Info dialog was closed" }
+        )
+    }
+}
