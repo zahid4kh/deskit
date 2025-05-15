@@ -1,0 +1,16 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:dialogs.file////PointingToDeclaration/deskit/dialogs.file/index.html
+$dokka.location:dialogs.file//FileChooserDialog/#kotlin.String#java.io.File#kotlin.collections.List[kotlin.String]?#kotlin.Function1[java.io.File,kotlin.Unit]#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/deskit/dialogs.file/-file-chooser-dialog.html
+$dokka.location:dialogs.file//FileChooserDialogSample/#/PointingToDeclaration/deskit/dialogs.file/-file-chooser-dialog-sample.html
+$dokka.location:dialogs.file//FileSaverDialog/#kotlin.String#kotlin.String#kotlin.String#kotlin.Function1[java.io.File,kotlin.Unit]#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/deskit/dialogs.file/-file-saver-dialog.html
+$dokka.location:dialogs.file//FileSaverDialogSample/#/PointingToDeclaration/deskit/dialogs.file/-file-saver-dialog-sample.html
+$dokka.location:dialogs.file//FolderChooserDialog/#kotlin.String#java.io.File#kotlin.Function1[java.io.File,kotlin.Unit]#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/deskit/dialogs.file/-folder-chooser-dialog.html
+$dokka.location:dialogs.file//FolderChooserDialogSample/#/PointingToDeclaration/deskit/dialogs.file/-folder-chooser-dialog-sample.html
+$dokka.location:dialogs////PointingToDeclaration/deskit/dialogs/index.html
+$dokka.location:dialogs//ConfirmationDialog/#kotlin.String#kotlin.String#kotlin.Function0[kotlin.Unit]#kotlin.Function0[kotlin.Unit]#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/deskit/dialogs/-confirmation-dialog.html
+$dokka.location:dialogs//ConfirmationDialogSample/#/PointingToDeclaration/deskit/dialogs/-confirmation-dialog-sample.html
+$dokka.location:dialogs//InfoDialog/#kotlin.String#kotlin.String#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/deskit/dialogs/-info-dialog.html
+$dokka.location:dialogs//InfoDialogSample/#/PointingToDeclaration/deskit/dialogs/-info-dialog-sample.html
+dialogs
+dialogs.file
