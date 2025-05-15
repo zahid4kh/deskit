@@ -62,10 +62,9 @@ fun FileChooserDialog(
     val files = remember(currentDir) {
         currentDir.listFiles()
             ?.filter {
-                !it.name.startsWith(".") && (it.isDirectory ||
-                        allowedExtensions == null ||
-                        allowedExtensions.any {
-                            ext -> it.name.endsWith(ext, ignoreCase = true)
+                !it.name.startsWith(".") &&
+                        (it.isDirectory || allowedExtensions == null || allowedExtensions.any {
+                                    ext -> it.name.endsWith(ext, ignoreCase = true)
                         })
             }
             ?.sortedWith(compareBy({ !it.isDirectory }, { it.name }))
