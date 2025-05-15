@@ -209,7 +209,24 @@ private fun getFileIcon(file: File): ImageVector {
     }
 }
 
-
+/**
+ * A sample composable function demonstrating the usage of the [FileChooserDialog].
+ *
+ * This sample displays a button that, when clicked, shows a [FileChooserDialog].
+ * The dialog is pre-configured with a title ("Open File") and a list of allowed
+ * file extensions (e.g., "txt", "md", "png").
+ *
+ * It also features a simple text that updates to reflect the state of the dialog:
+ * - "File chooser dialog is shown" when the dialog is opened.
+ * - "Selected file: [path_to_file]" when a file is successfully selected.
+ * - "File chooser dialog was closed" when the dialog is cancelled.
+ *
+ * This serves as a practical example of how to integrate and manage the
+ * [FileChooserDialog], including handling file selection and cancellation events,
+ * within a Composable UI.
+ *
+ * @sample dialogs.file.FileChooserDialogSample
+ */
 @Composable
 fun FileChooserDialogSample(){
     var showFileChooserDialog by remember { mutableStateOf(false) }
