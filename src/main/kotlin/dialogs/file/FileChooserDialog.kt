@@ -26,6 +26,30 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 import java.io.File
 
+/**
+ * Displays a file selection dialog with smart file type icons and optional extension filtering.
+ *
+ * This dialog provides file system navigation with visual file type identification through
+ * contextual icons. Files can be filtered by extension, and the dialog includes a breadcrumb
+ * navigation trail.
+ *
+ * @param title The title text displayed in the dialog window's title bar. Defaults to "Choose File".
+ * @param startDirectory The initial directory to display when the dialog opens.
+ *                       Defaults to the user's Downloads folder.
+ * @param allowedExtensions Optional list of file extensions to filter by (e.g., ["txt", "pdf"]).
+ *                          If null, all files are shown. Extensions are case-insensitive.
+ * @param onFileSelected Callback function invoked with the selected File when the user clicks a file.
+ * @param onCancel Callback function invoked when the user cancels the operation.
+ *
+ * Features:
+ * - Smart file type icons based on extension
+ * - Directory and file navigation
+ * - Bold breadcrumb trail with clickable segments
+ * - Optional file extension filtering
+ * - Color-coded folders with primary theme color
+ *
+ * @sample FileChooserDialogSample
+ */
 @Composable
 fun FileChooserDialog(
     title: String = "Choose File",
@@ -123,6 +147,27 @@ fun FileChooserDialog(
     }
 }
 
+/**
+ * Determines the appropriate Material icon for a given file based on its type and extension.
+ *
+ * This function analyzes the file extension to return a contextually appropriate icon from
+ * the Material Icons Extended library. Directories receive a special folder icon with primary
+ * color tinting.
+ *
+ * @param file The File object to analyze for icon selection.
+ * @return ImageVector representing the most appropriate icon for the file type.
+ *
+ * Supported file types:
+ * - **Images**: PNG, JPG, GIF, BMP, WebP, SVG
+ * - **Documents**: PDF, Word, Excel, PowerPoint, TXT, Markdown
+ * - **Code**: Kotlin, Java, JavaScript, Python, HTML, CSS, JSON, etc.
+ * - **Archives**: ZIP, RAR, 7Z, TAR, GZ
+ * - **Media**: Audio (MP3, WAV, FLAC) and Video (MP4, AVI, MKV)
+ * - **Fonts**: TTF, OTF, WOFF
+ * - **Executables**: EXE, APP, DEB, RPM
+ *
+ * Files without recognized extensions receive a generic file icon.
+ */
 private fun getFileIcon(file: File): ImageVector {
     if (file.isDirectory) return Icons.Default.Folder
 
