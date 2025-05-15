@@ -17,11 +17,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import java.awt.Dimension
 import java.io.File
 
 /**
@@ -77,6 +79,7 @@ fun FileSaverDialog(
         state = dialogState,
         onCloseRequest = onCancel
     ) {
+        window.minimumSize = Dimension(600, 600)
         Surface{
             Column(Modifier.padding(16.dp)) {
                 Text("Saving as", style = MaterialTheme.typography.titleLarge)
@@ -94,12 +97,19 @@ fun FileSaverDialog(
                         },
                         label = { Text("File name") },
                         modifier = Modifier.weight(1f),
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.large,
+                        placeholder = { Text("Enter filename${extension}") },
+                        supportingText = { Text("Extension $extension will be added automatically",
+                            style = MaterialTheme.typography.bodySmall) }
                     )
 
                     Spacer(Modifier.width(8.dp))
 
-                    Text(extension)
+                    Text(
+                        text = extension,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
 
                 Spacer(Modifier.height(8.dp))
@@ -124,10 +134,10 @@ fun FileSaverDialog(
                                     .clip(MaterialTheme.shapes.medium)
                                     .clickable { currentDir = dir }
                                     .padding(8.dp),
-                                style = MaterialTheme.typography.labelLarge
+                                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
                             )
                             if (index != pathSegments.lastIndex) {
-                                Text("/", style = MaterialTheme.typography.labelLarge)
+                                Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
                             }
                         }
                     }
