@@ -42,7 +42,7 @@ import java.io.File
  * - File existence validation
  * - Back button for parent directory navigation
  *
- * @sample FileSaverDialogSample
+ * @sample dialogs.file.FileSaverDialogSample
  */
 @Composable
 fun FileSaverDialog(
