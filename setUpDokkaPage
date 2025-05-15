@@ -7,12 +7,26 @@ echo "Starting documentation copy process..."
 
 # Checking if the source directory exists
 if [ ! -d "$SOURCE_DIR" ]; then
-    echo "Error: Source directory '$SOURCE_DIR' not found."
-    echo "Please make sure you have generated the Dokka HTML documentation first."
-    echo "You can typically do this by running a Gradle task like './gradlew dokkaHtml'."
-    exit 1
+    echo "Source directory '$SOURCE_DIR' not found."
+    echo "Attempting to generate Dokka HTML documentation by running './gradlew dokkaHtml'..."
+
+    if ./gradlew dokkaHtml; then
+        echo "Dokka HTML documentation generation task completed."
+
+        if [ ! -d "$SOURCE_DIR" ]; then
+            echo "Error: Source directory '$SOURCE_DIR' still not found after running dokkaHtml."
+            exit 1
+        else
+            echo "Source directory '$SOURCE_DIR' found after generation."
+        fi
+    else
+        echo "Error: Failed to execute './gradlew dokkaHtml'."
+        echo "Please check the Gradle task output for errors."
+        exit 1
+    fi
+else
+    echo "Source directory '$SOURCE_DIR' found."
 fi
-echo "Source directory '$SOURCE_DIR' found."
 
 # Creating the "docs" directory if it doesn't exist
 mkdir -p "$DOCS_DIR"
