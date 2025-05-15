@@ -75,8 +75,7 @@ fun FileSaverDialog(
     DialogWindow(
         title = title,
         state = dialogState,
-        onCloseRequest = onCancel,
-        resizable = false
+        onCloseRequest = onCancel
     ) {
         Surface{
             Column(Modifier.padding(16.dp)) {
