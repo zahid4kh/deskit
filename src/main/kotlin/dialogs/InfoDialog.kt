@@ -72,6 +72,16 @@ fun InfoDialog(
     }
 }
 
+/**
+ * A sample composable function demonstrating the usage of the [InfoDialog].
+ *
+ * This sample displays a button that, when clicked, shows an [InfoDialog].
+ * It also displays a text field that updates to reflect the state of the dialog
+ * (e.g., "Info dialog is shown", "Info dialog was closed").
+ * This serves as a practical example of how to integrate and manage the
+ * [InfoDialog] within a Composable UI.
+ * @sample dialogs.InfoDialogSample
+ */
 @Composable
 fun InfoDialogSample(){
     var showInfoDialog by remember { mutableStateOf(false) }
