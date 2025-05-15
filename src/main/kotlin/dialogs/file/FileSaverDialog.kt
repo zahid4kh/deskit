@@ -85,7 +85,13 @@ fun FileSaverDialog(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     OutlinedTextField(
                         value = fileName,
-                        onValueChange = { fileName = it },
+                        onValueChange = { newValue ->
+                            fileName = if (newValue.endsWith(extension, ignoreCase = true)) {
+                                newValue.dropLast(extension.length)
+                            } else {
+                                newValue
+                            }
+                        },
                         label = { Text("File name") },
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.large
