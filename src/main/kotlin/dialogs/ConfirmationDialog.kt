@@ -80,6 +80,17 @@ fun ConfirmationDialog(
     }
 }
 
+/**
+ * A sample composable function demonstrating the usage of the [ConfirmationDialog].
+ *
+ * This sample displays a button that, when clicked, shows a [ConfirmationDialog].
+ * It also features a text field that updates to reflect the state of the dialog
+ * (e.g., "Confirmation dialog is shown", "Confirm was clicked", "Cancel was clicked",
+ * or "Confirmation dialog was closed"). This serves as a practical example of how to
+ * integrate and manage the [ConfirmationDialog] and its different dismissal/action
+ * callbacks within a Composable UI.
+ * @sample dialogs.ConfirmationDialogSample
+ */
 @Composable
 fun ConfirmationDialogSample(){
     var showConfirmationDialog by remember { mutableStateOf(false) }
