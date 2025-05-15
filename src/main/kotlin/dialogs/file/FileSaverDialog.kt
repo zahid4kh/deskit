@@ -228,7 +228,12 @@ fun FileSaverDialog(
                     Spacer(Modifier.width(8.dp))
                     Button(
                         onClick = {
-                            val finalFile = File(currentDir, fileName)
+                            val finalFileName = if (fileName.endsWith(extension, ignoreCase = true)) {
+                                fileName
+                            } else {
+                                fileName + extension
+                            }
+                            val finalFile = File(currentDir, finalFileName)
                             if (finalFile.exists()) {
                                 showFileExistsDialog = true
                             } else {
