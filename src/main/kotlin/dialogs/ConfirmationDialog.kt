@@ -26,7 +26,7 @@ import androidx.compose.ui.window.rememberDialogState
  * @param onClose Callback function invoked when the dialog is closed via the window's X button.
  *                Defaults to calling onCancel.
  *
- * @sample ConfirmationDialogSample
+ * @sample dialogs.ConfirmationDialogSample
  */
 @Composable
 fun ConfirmationDialog(
