@@ -124,6 +124,23 @@ fun FolderChooserDialog(
 }
 
 
+/**
+ * A sample composable function demonstrating the usage of the [FolderChooserDialog].
+ *
+ * This sample displays a button that, when clicked, shows a [FolderChooserDialog].
+ * The dialog is configured with the title "Select Folder".
+ *
+ * It also features a text field that updates to reflect the state of the dialog:
+ * - "Folder chooser dialog is shown" when the dialog is opened.
+ * - "Selected folder: [path_to_folder]" when a folder is successfully selected.
+ * - "Folder chooser dialog was closed" when the dialog is cancelled.
+ *
+ * This serves as a practical example of how to integrate and manage the
+ * [FolderChooserDialog], including handling folder selection and cancellation events,
+ * within a Composable UI.
+ *
+ * @sample dialogs.file.FolderChooserDialogSample
+ */
 @Composable
 fun FolderChooserDialogSample(){
     var showFolderChooserDialog by remember { mutableStateOf(false) }
