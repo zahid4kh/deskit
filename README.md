@@ -37,7 +37,7 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation("com.github.zahid4kh:deskit:1.1.0")
+    implementation("com.github.zahid4kh:deskit:1.1.1")
 }
 
 kotlin {
@@ -64,7 +64,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.zahid4kh:deskit:1.1.0")
+    implementation("com.github.zahid4kh:deskit:1.1.1")
 }
 ```
 
