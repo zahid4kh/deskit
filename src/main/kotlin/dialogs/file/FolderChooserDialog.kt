@@ -107,3 +107,39 @@ fun FolderChooserDialog(
         }
     }
 }
+
+
+@Composable
+fun FolderChooserDialogSample(){
+    var showFolderChooserDialog by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Button(
+            onClick = {
+                showFolderChooserDialog = true
+                text = "Folder chooser dialog is shown"
+            }
+        ) {
+            Text("Show Folder Chooser Dialog")
+        }
+
+        Text(text)
+    }
+
+
+    if (showFolderChooserDialog) {
+        FolderChooserDialog(
+            title = "Select Folder",
+            onFolderSelected = {
+                showFolderChooserDialog = false
+                text = "Selected folder: ${it.absolutePath}"
+            },
+            onCancel = { showFolderChooserDialog = false; text = "Folder chooser dialog was closed" }
+        )
+    }
+}
