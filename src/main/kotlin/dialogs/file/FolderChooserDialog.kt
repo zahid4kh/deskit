@@ -34,7 +34,7 @@ import java.io.File
  *                         the user clicks Choose.
  * @param onCancel Callback function invoked when the user cancels the operation.
  *
- * @sample FolderChooserDialogSample
+ * @sample dialogs.file.FolderChooserDialogSample
  */
 @Composable
 fun FolderChooserDialog(
