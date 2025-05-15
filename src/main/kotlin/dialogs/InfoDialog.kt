@@ -5,7 +5,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -15,6 +15,18 @@ import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 
+/**
+ * Displays a modal information dialog with a custom title, message, and single OK button.
+ *
+ * This dialog is typically used to show non-critical information to the user that only requires
+ * acknowledgment. The dialog is centered on screen and has a fixed size.
+ *
+ * @param title The title text displayed in the dialog window's title bar. Defaults to "Information".
+ * @param message The main message text displayed in the center of the dialog. Defaults to "Information message".
+ * @param onClose Callback function invoked when the user clicks OK or closes the dialog.
+ *
+ * @sample InfoDialogSample
+ */
 @Composable
 fun InfoDialog(
     title: String = "Information",
