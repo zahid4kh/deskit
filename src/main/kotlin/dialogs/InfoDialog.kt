@@ -25,7 +25,7 @@ import androidx.compose.ui.window.rememberDialogState
  * @param message The main message text displayed in the center of the dialog. Defaults to "Information message".
  * @param onClose Callback function invoked when the user clicks OK or closes the dialog.
  *
- * @sample InfoDialogSample
+ * @sample dialogs.InfoDialogSample
  */
 @Composable
 fun InfoDialog(
