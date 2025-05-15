@@ -48,7 +48,7 @@ import java.io.File
  * - Optional file extension filtering
  * - Color-coded folders with primary theme color
  *
- * @sample FileChooserDialogSample
+ * @sample dialogs.file.FileChooserDialogSample
  */
 @Composable
 fun FileChooserDialog(
