@@ -163,3 +163,40 @@ private fun getFileIcon(file: File): ImageVector {
         else -> Icons.AutoMirrored.Filled.InsertDriveFile
     }
 }
+
+
+@Composable
+fun FileChooserDialogSample(){
+    var showFileChooserDialog by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Button(
+            onClick = {
+                showFileChooserDialog = true
+                text = "File chooser dialog is shown"
+            }
+        ) {
+            Text("Show File chooser Dialog")
+        }
+
+        Text(text)
+    }
+
+
+    if(showFileChooserDialog){
+        FileChooserDialog(
+            title = "Open File",
+            allowedExtensions = listOf("txt", "md", "json", "kt", "py", "js", "html", "css", "png", "jpg"),
+            onFileSelected = {
+                showFileChooserDialog = false
+                text = "Selected file: ${it.absolutePath}"
+            },
+            onCancel = { showFileChooserDialog = false; text = "File chooser dialog was closed" }
+        )
+    }
+}
