@@ -288,15 +288,10 @@ fun FileSaverDialog(
             fileName + extension
         }
 
-        AlertDialog(
-            onDismissRequest = { showFileExistsDialog = false },
-            title = { Text("File Already Exists") },
-            text = { Text("A file named \"$displayFileName\" already exists in this folder. Please choose a different name.") },
-            confirmButton = {
-                TextButton(onClick = { showFileExistsDialog = false }) {
-                    Text("OK")
-                }
-            }
+        InfoDialog(
+            title = "File already exists",
+            message = "A file named \"$displayFileName\" already exists in this folder. Please choose a different name.",
+            onClose = { showFileExistsDialog = false }
         )
     }
 }
