@@ -282,10 +282,16 @@ fun FileSaverDialog(
     }
 
     if (showFileExistsDialog) {
+        val displayFileName = if (fileName.endsWith(extension, ignoreCase = true)) {
+            fileName
+        } else {
+            fileName + extension
+        }
+
         AlertDialog(
             onDismissRequest = { showFileExistsDialog = false },
             title = { Text("File Already Exists") },
-            text = { Text("A file named \"$fileName\" already exists in this folder. Please choose a different name.") },
+            text = { Text("A file named \"$displayFileName\" already exists in this folder. Please choose a different name.") },
             confirmButton = {
                 TextButton(onClick = { showFileExistsDialog = false }) {
                     Text("OK")
