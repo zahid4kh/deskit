@@ -143,7 +143,7 @@ fun FileSaverDialog(
                     ) {
                         pathSegments.forEachIndexed { index, dir ->
                             Text(
-                                text = dir.name.ifBlank { "Home" },
+                                text = dir.name.ifBlank { "." },
                                 color = if (index == pathSegments.lastIndex)
                                     MaterialTheme.colorScheme.primary else LocalContentColor.current,
                                 modifier = Modifier
