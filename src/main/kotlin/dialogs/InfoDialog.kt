@@ -79,7 +79,8 @@ fun InfoDialog(
 
                 Button(
                     onClick = onClose,
-                    modifier = Modifier.align(Alignment.End)
+                    modifier = Modifier.align(Alignment.End),
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Text("OK")
                 }
