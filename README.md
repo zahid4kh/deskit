@@ -32,7 +32,7 @@ A library for desktop components designed for *Compose for Desktop* applications
 - **🎨 Visual File Types**: Rich file type icons for better user experience
 - **📱 Component-Based Architecture**: More maintainable and consistent UI across all dialogs
 
-## Demo Video
+### Demo Video
 
 FolderChooserDialog in action:
 
