@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.common)
+    implementation(compose.components.resources)
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
 }
@@ -30,4 +31,10 @@ java {
     withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+compose.resources{
+    publicResClass = false
+    packageOfResClass = "deskit.resources"
+    generateResClass = auto
 }
