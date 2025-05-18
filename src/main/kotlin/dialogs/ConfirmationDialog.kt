@@ -16,11 +16,14 @@ limitations under the License.
 
 package dialogs
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -29,7 +32,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 
 /**
- * Displays a modal confirmation dialog with Cancel and OK buttons.
+ * Displays a modal confirmation dialog with Cancel and OK buttons, and an optional icon.
  *
  * This dialog is used when an action requires user confirmation before proceeding.
  * The dialog provides separate callbacks for confirm and cancel actions, allowing
@@ -37,7 +40,14 @@ import androidx.compose.ui.window.rememberDialogState
  *
  * @param title The title text displayed in the dialog window's title bar.
  * @param message The confirmation message displayed to the user.
- * @param onConfirm Callback function invoked when the user clicks the OK button.
+ * @param icon Optional icon/image to display in the dialog to enhance visual appeal.
+ * @param iconSize Size of the icon if provided. Defaults to 64.dp.
+ * @param colorFilter Color filter to apply to the icon if provided.
+ * @param confirmButtonText Text for the confirmation button. Defaults to "OK".
+ * @param cancelButtonText Text for the cancel button. Defaults to "Cancel".
+ * @param content Optional composable content to replace the standard message. Can be used for
+ *                custom layout, rich text, or more complex confirmation displays.
+ * @param onConfirm Callback function invoked when the user clicks the confirmation button.
  * @param onCancel Callback function invoked when the user clicks Cancel or the X button.
  * @param onClose Callback function invoked when the dialog is closed via the window's X button.
  *                Defaults to calling onCancel.
@@ -48,12 +58,28 @@ import androidx.compose.ui.window.rememberDialogState
 fun ConfirmationDialog(
     title: String = "Confirmation",
     message: String = "Please confirm to proceed",
+    icon: Painter? = null,
+    iconSize: DpSize = DpSize(64.dp, 64.dp),
+    colorFilter: ColorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+    confirmButtonText: String = "OK",
+    cancelButtonText: String = "Cancel",
+    content: @Composable () -> Unit = {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+    },
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
     onClose: () -> Unit = onCancel
 ) {
+    val dialogWidth = if (icon != null) 500.dp else 450.dp
+    val dialogHeight = if (icon != null) 280.dp else 230.dp
+
     val dialogState = rememberDialogState(
-        size = DpSize(450.dp, 230.dp),
+        size = DpSize(dialogWidth, dialogHeight),
         position = WindowPosition(Alignment.Center)
     )
 
@@ -71,24 +97,43 @@ fun ConfirmationDialog(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.height(8.dp))
+                if (icon != null) {
+                    Spacer(Modifier.height(4.dp))
+                    Image(
+                        painter = icon,
+                        contentDescription = null,
+                        colorFilter = colorFilter,
+                        modifier = Modifier.size(iconSize.width, iconSize.height)
+                    )
+                    Spacer(Modifier.height(16.dp))
+                } else {
+                    Spacer(Modifier.height(8.dp))
+                }
 
-                Text(
-                    text = message,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
-                )
+                Box(
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    content()
+                }
 
                 Row(
                     modifier = Modifier.align(Alignment.End),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    TextButton(onClick = onCancel) {
-                        Text("Cancel")
+                    TextButton(
+                        onClick = onCancel,
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Text(cancelButtonText)
                     }
-                    Button(onClick = onConfirm) {
-                        Text("OK")
+                    Button(
+                        onClick = onConfirm,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text(confirmButtonText)
                     }
                 }
             }
