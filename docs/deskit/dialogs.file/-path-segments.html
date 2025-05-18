@@ -2,7 +2,7 @@
 <html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>FileSaverDialogSample</title>
+    <title>PathSegments</title>
     <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
     <script>var pathToRoot = "../../";</script>
     <script>document.documentElement.classList.replace("no-js","js");</script>
@@ -104,78 +104,12 @@
                 </div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="member" id="content" pageIds="deskit::dialogs.file//FileSaverDialogSample/#/PointingToDeclaration//769193423">
-  <div class="breadcrumbs"><a href="../../index.html">deskit</a><span class="delimiter">/</span><a href="index.html">dialogs.file</a><span class="delimiter">/</span><span class="current">FileSaverDialogSample</span></div>
+<div class="main-content" data-page-type="member" id="content" pageIds="deskit::dialogs.file//PathSegments/#kotlin.collections.List[java.io.File]#kotlin.Function1[java.io.File,kotlin.Unit]#androidx.compose.foundation.ScrollState/PointingToDeclaration//769193423">
+  <div class="breadcrumbs"><a href="../../index.html">deskit</a><span class="delimiter">/</span><a href="index.html">dialogs.file</a><span class="delimiter">/</span><span class="current">PathSegments</span></div>
   <div class="cover ">
-    <h1 class="cover"><span>File</span><wbr></wbr><span>Saver</span><wbr></wbr><span>Dialog</span><wbr></wbr><span><span>Sample</span></span></h1>
+    <h1 class="cover"><span>Path</span><wbr></wbr><span><span>Segments</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":dokkaHtml/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="androidx.compose.runtime/Composable///PointingToDeclaration/"><span class="token annotation builtin">Composable</span></span></div></div><span class="token keyword">fun </span><a href="-file-saver-dialog-sample.html"><span class="token function">FileSaverDialogSample</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><p class="paragraph">A sample composable function demonstrating the usage of the <a href="-file-saver-dialog.html">FileSaverDialog</a>.</p><p class="paragraph">This sample displays a button that, when clicked, shows a <a href="-file-saver-dialog.html">FileSaverDialog</a>. The dialog is pre-configured with a title (&quot;Save As&quot;), a suggested filename (&quot;newfile&quot;), and a file extension (&quot;.md&quot;).</p><p class="paragraph">It also features a text field that updates to reflect the state of the dialog:</p><ul><li><p class="paragraph">&quot;File saver dialog is shown&quot; when the dialog is opened.</p></li><li><p class="paragraph">&quot;File was saved and dialog was closed&quot; when a file is successfully saved. In this sample, upon saving, &quot;# Kotlin is fun&quot; is written to the chosen file.</p></li><li><p class="paragraph">&quot;File saver dialog was closed&quot; when the dialog is cancelled.</p></li></ul><p class="paragraph">This serves as a practical example of how to integrate and manage the <a href="-file-saver-dialog.html">FileSaverDialog</a>, including handling file saving and cancellation events, within a Composable UI.</p><h4 class="">Samples</h4><div class="sample-container"><pre><code class="runnablesample monospace block lang-kotlin" theme="idea">import androidx.compose.animation.*
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowCircleLeft
-import androidx.compose.material.icons.filled.CreateNewFolder
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogWindow
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.rememberDialogState
-import deskit.resources.*
-import dialogs.InfoDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
-import java.awt.Dimension
-import java.io.File
-
-fun main() { 
-   //sampleStart 
-   var showFileSaverDialog by remember { mutableStateOf(false) }
-var text by remember { mutableStateOf(&quot;&quot;) }
-
-Column(
-    modifier = Modifier.fillMaxSize(),
-    verticalArrangement = Arrangement.spacedBy(16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally
-){
-    Button(
-        onClick = {
-            showFileSaverDialog = true
-            text = &quot;File saver dialog is shown&quot;
-        }
-    ) {
-        Text(&quot;Show File Saver Dialog&quot;)
-    }
-
-    Text(text)
-}
-
-
-if(showFileSaverDialog){
-    FileSaverDialog(
-        title = &quot;Save As&quot;,
-        suggestedFileName = &quot;newfile&quot;,
-        extension = &quot;.md&quot;,
-        onSave = {
-            it.writeText(&quot;# Kotlin is fun&quot;)
-            showFileSaverDialog = false; text = &quot;File was saved and dialog was closed&quot;
-        },
-        onCancel = { showFileSaverDialog = false; text = &quot;File saver dialog was closed&quot; }
-    )
-} 
-   //sampleEnd
-}</code></pre></div></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":dokkaHtml/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="androidx.compose.runtime/Composable///PointingToDeclaration/"><span class="token annotation builtin">Composable</span></span></div></div><span class="token keyword">fun </span><a href="-path-segments.html"><span class="token function">PathSegments</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">pathSegments<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">onPathSelected<span class="token operator">: </span><span class="token punctuation">(</span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter ">scrollState<span class="token operator">: </span><span data-unresolved-link="androidx.compose.foundation/ScrollState///PointingToDeclaration/">ScrollState</span></span></span><span class="token punctuation">)</span></div></div></div>
 </div>
     <div class="footer">
         <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>

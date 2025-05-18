@@ -46,7 +46,7 @@
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
-1.1.1        </div>
+1.2.0        </div>
         <div class="navigation-controls">
         <div class="filter-section filter-section_loading" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active=""
@@ -109,63 +109,7 @@
   <div class="cover ">
     <h1 class="cover"><span>Folder</span><wbr></wbr><span>Chooser</span><wbr></wbr><span><span>Dialog</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":dokkaHtml/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="androidx.compose.runtime/Composable///PointingToDeclaration/"><span class="token annotation builtin">Composable</span></span></div></div><span class="token keyword">fun </span><a href="-folder-chooser-dialog.html"><span class="token function">FolderChooserDialog</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">title<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;Choose Folder&quot;</span><span class="token punctuation">, </span></span><span class="parameter ">startDirectory<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token operator"> = </span>File(System.getProperty(&quot;user.home&quot;) + &quot;/Downloads&quot;)<span class="token punctuation">, </span></span><span class="parameter ">onFolderSelected<span class="token operator">: </span><span class="token punctuation">(</span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter ">onCancel<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">Displays a folder selection dialog with directory navigation and breadcrumb trail.</p><p class="paragraph">This dialog allows users to browse and select folders from the file system. It shows only directories, hiding files and system folders (those starting with &quot;.&quot;).</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>title</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The title text displayed in the dialog window's title bar. Defaults to &quot;Choose Folder&quot;.</p></div></div></div></div><div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>start</span><wbr></wbr><span><span>Directory</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The initial directory to display when the dialog opens.     Defaults to the user's Downloads folder.</p></div></div></div></div><div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>on</span><wbr></wbr><span>Folder</span><wbr></wbr><span><span>Selected</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Callback function invoked with the selected File (directory) when     the user clicks Choose.</p></div></div></div></div><div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>on</span><wbr></wbr><span><span>Cancel</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Callback function invoked when the user cancels the operation.</p></div></div></div></div></div><h4 class="">Samples</h4><div class="sample-container"><pre><code class="runnablesample monospace block lang-kotlin" theme="idea">import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogWindow
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.rememberDialogState
-import java.awt.Dimension
-import java.io.File
-
-fun main() { 
-   //sampleStart 
-   var showFolderChooserDialog by remember { mutableStateOf(false) }
-var text by remember { mutableStateOf(&quot;&quot;) }
-
-Column(
-    modifier = Modifier.fillMaxSize(),
-    verticalArrangement = Arrangement.spacedBy(16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally
-){
-    Button(
-        onClick = {
-            showFolderChooserDialog = true
-            text = &quot;Folder chooser dialog is shown&quot;
-        }
-    ) {
-        Text(&quot;Show Folder Chooser Dialog&quot;)
-    }
-
-    Text(text)
-}
-
-
-if (showFolderChooserDialog) {
-    FolderChooserDialog(
-        title = &quot;Select Folder&quot;,
-        onFolderSelected = {
-            showFolderChooserDialog = false
-            text = &quot;Selected folder: ${it.absolutePath}&quot;
-        },
-        onCancel = { showFolderChooserDialog = false; text = &quot;Folder chooser dialog was closed&quot; }
-    )
-} 
-   //sampleEnd
-}</code></pre></div></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":dokkaHtml/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="androidx.compose.runtime/Composable///PointingToDeclaration/"><span class="token annotation builtin">Composable</span></span></div></div><span class="token keyword">fun </span><a href="-folder-chooser-dialog.html"><span class="token function">FolderChooserDialog</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">title<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;Choose Folder&quot;</span><span class="token punctuation">, </span></span><span class="parameter ">startDirectory<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token operator"> = </span>File(System.getProperty(&quot;user.home&quot;) + &quot;/Downloads&quot;)<span class="token punctuation">, </span></span><span class="parameter ">onFolderSelected<span class="token operator">: </span><span class="token punctuation">(</span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter ">onCancel<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">Displays a folder selection dialog with directory navigation and breadcrumb trail.</p><p class="paragraph">This dialog allows users to browse and select folders from the file system. It displays both files and directories, but only folders can be selected for the final result. Files are shown with dimmed appearance and attempting to select them will display an informational dialog. System items (those starting with &quot;.&quot;) are hidden.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>title</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The title text displayed in the dialog window's title bar. Defaults to &quot;Choose Folder&quot;.</p></div></div></div></div><div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>start</span><wbr></wbr><span><span>Directory</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The initial directory to display when the dialog opens.     Defaults to the user's Downloads folder.</p></div></div></div></div><div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>on</span><wbr></wbr><span>Folder</span><wbr></wbr><span><span>Selected</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Callback function invoked with the selected File (directory) when     the user clicks Choose.</p></div></div></div></div><div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>on</span><wbr></wbr><span><span>Cancel</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Callback function invoked when the user cancels the operation.</p><p class="paragraph">Features:</p><ul><li><p class="paragraph">Path breadcrumb navigation with scrollbar</p></li><li><p class="paragraph">Visual distinction between selectable folders and non-selectable files</p></li><li><p class="paragraph">User guidance through InfoDialog when attempting to select files</p></li><li><p class="paragraph">Folder content browsing with vertical scrollbar</p></li></ul></div></div></div></div></div><h4 class="">Samples</h4>FolderChooserDialogSample</div></div>
 </div>
     <div class="footer">
         <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
