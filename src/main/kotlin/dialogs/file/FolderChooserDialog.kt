@@ -16,33 +16,41 @@ limitations under the License.
 
 package dialogs.file
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.ArrowCircleLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.resources.*
+import dialogs.InfoDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import java.awt.Dimension
 import java.io.File
 
 /**
  * Displays a folder selection dialog with directory navigation and breadcrumb trail.
  *
- * This dialog allows users to browse and select folders from the file system. It shows
- * only directories, hiding files and system folders (those starting with ".").
+ * This dialog allows users to browse and select folders from the file system. It displays
+ * both files and directories, but only folders can be selected for the final result.
+ * Files are shown with dimmed appearance and attempting to select them will display an
+ * informational dialog. System items (those starting with ".") are hidden.
  *
  * @param title The title text displayed in the dialog window's title bar. Defaults to "Choose Folder".
  * @param startDirectory The initial directory to display when the dialog opens.
@@ -51,7 +59,13 @@ import java.io.File
  *                         the user clicks Choose.
  * @param onCancel Callback function invoked when the user cancels the operation.
  *
- * @sample dialogs.file.FolderChooserDialogSample
+ * Features:
+ * - Path breadcrumb navigation with scrollbar
+ * - Visual distinction between selectable folders and non-selectable files
+ * - User guidance through InfoDialog when attempting to select files
+ * - Folder content browsing with vertical scrollbar
+ *
+ * @sample FolderChooserDialogSample
  */
 @Composable
 fun FolderChooserDialog(
@@ -61,10 +75,14 @@ fun FolderChooserDialog(
     onCancel: () -> Unit
 ) {
     var currentDir by remember { mutableStateOf(startDirectory) }
-    val folders = remember(currentDir) {
+    var showFileNotAllowedDialog by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
+    val items = remember(currentDir) {
         currentDir.listFiles()
-            ?.filter { it.isDirectory && !it.name.startsWith(".") }
-            ?.sortedBy { it.name } ?: emptyList()
+            ?.filter { !it.name.startsWith(".") }
+            ?.sortedWith(compareBy({ !it.isDirectory }, { it.name }))
+            ?: emptyList()
     }
 
     val pathSegments = generateSequence(currentDir) { it.parentFile }
@@ -72,6 +90,8 @@ fun FolderChooserDialog(
         .asReversed()
 
     val dialogState = rememberDialogState(size = DpSize(600.dp, 600.dp), position = WindowPosition(Alignment.Center))
+
+    val pathScrollState = rememberScrollState()
 
     DialogWindow(
         title = title,
@@ -85,58 +105,293 @@ fun FolderChooserDialog(
 
                 Spacer(Modifier.height(8.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier
-                        .horizontalScroll(rememberScrollState())
-                        .padding(bottom = 8.dp)
-                ) {
-                    pathSegments.forEachIndexed { index, dir ->
-                        Text(
-                            text = dir.name.ifBlank { "Home" },
-                            color = if (index == pathSegments.lastIndex)
-                                MaterialTheme.colorScheme.primary else LocalContentColor.current,
-                            modifier = Modifier.clickable {
-                                currentDir = dir
-                            },
-                            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
-                        )
-                        if (index != pathSegments.lastIndex) {
-                            Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
-                        }
-                    }
-                }
+                PathSegmentsSection(
+                    pathScrollState = pathScrollState,
+                    pathSegments = pathSegments,
+                    onFolderSelected = { currentDir = it }
+                )
 
-                LazyColumn(Modifier.weight(1f)) {
-                    items(folders) { folder ->
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.medium)
-                                .clickable {
-                                    currentDir = folder
-                                }
-                                .padding(9.dp)
-                        ) {
-                            Icon(Icons.Default.Folder, contentDescription = null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(folder.name)
-                        }
-                    }
-                }
+                BackButtonSection(
+                    coroutineScope = coroutineScope,
+                    pathScrollState = pathScrollState,
+                    onBackClicked = { currentDir = it },
+                    currentDir = currentDir
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                FilesAndFoldersListSection(
+                    coroutineScope = coroutineScope,
+                    pathScrollState = pathScrollState,
+                    items = items,
+                    onFileClicked = { showFileNotAllowedDialog = true },
+                    onFolderSelected = { currentDir = it },
+                    modifier = Modifier.weight(1f)
+                )
 
                 Spacer(Modifier.height(8.dp))
 
                 Row(Modifier.align(Alignment.End)) {
-                    TextButton(onClick = onCancel) { Text("Cancel") }
+                    TextButton(onClick = onCancel) {
+                        Text("Cancel", color = MaterialTheme.colorScheme.error)
+                    }
                     Spacer(Modifier.width(8.dp))
-                    Button(onClick = { onFolderSelected(currentDir) }) {
+                    Button(
+                        onClick = { onFolderSelected(currentDir) },
+                        shape = MaterialTheme.shapes.medium
+                    ) {
                         Text("Choose")
                     }
                 }
             }
         }
+    }
+    if (showFileNotAllowedDialog) {
+        InfoDialog(
+            title = "Cannot Select Files",
+            message = "This dialog only allows selecting folders. Please choose a folder instead.",
+            onClose = { showFileNotAllowedDialog = false }
+        )
+    }
+}
+
+@Composable
+private fun FilesAndFoldersListSection(
+    coroutineScope: CoroutineScope,
+    pathScrollState: ScrollState,
+    items: List<File>,
+    onFileClicked: () -> Unit,
+    onFolderSelected: (File) -> Unit,
+    modifier: Modifier = Modifier
+){
+    Box(
+        modifier = modifier
+    ){
+        val listState = rememberLazyListState()
+
+        Box(modifier = Modifier.fillMaxSize()){
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = 12.dp)
+            ) {
+                items(items) { item ->
+                    if (item.isDirectory) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(MaterialTheme.shapes.medium)
+                                .clickable {
+                                    onFolderSelected(item)
+                                    //currentDir = item
+                                    coroutineScope.launch {
+                                        pathScrollState.animateScrollTo(pathScrollState.maxValue)
+                                    }
+                                }
+                                .padding(9.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.folder),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.tertiary,
+                                modifier = Modifier.size(22.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(item.name, overflow = TextOverflow.Ellipsis)
+                        }
+                    } else {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(MaterialTheme.shapes.medium)
+                                .clickable {
+                                    onFileClicked()
+                                }
+                                .padding(9.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = getFileIcon(item),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
+                                modifier = Modifier.size(22.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = item.name,
+                                overflow = TextOverflow.Ellipsis,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                    }
+                }
+            }
+
+            VerticalScrollbar(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(listState),
+                style = LocalScrollbarStyle.current.copy(
+                    hoverColor = MaterialTheme.colorScheme.outline,
+                    unhoverColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun BackButtonSection(
+    coroutineScope: CoroutineScope,
+    pathScrollState: ScrollState,
+    onBackClicked: (File) -> Unit,
+    currentDir: File
+){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ){
+            if (currentDir.parentFile != null) {
+                IconButton(
+                    onClick = {
+                        currentDir.parentFile?.let { parent ->
+                            //currentDir = parent
+                            onBackClicked(parent)
+
+                            coroutineScope.launch {
+                                pathScrollState.animateScrollTo(pathScrollState.maxValue)
+                            }
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowCircleLeft,
+                        contentDescription = "Back"
+                    )
+                }
+            }
+            Spacer(Modifier.width(3.dp))
+            Text("Current Directory", style = MaterialTheme.typography.labelLarge)
+        }
+    }
+}
+
+@Composable
+private fun PathSegmentsSection(
+    pathScrollState: ScrollState,
+    pathSegments: List<File>,
+    onFolderSelected: (File) -> Unit,
+){
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ){
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .horizontalScroll(pathScrollState)
+                .padding(bottom = 8.dp, end = 12.dp)
+        ) {
+            pathSegments.forEachIndexed { index, dir ->
+                Text(
+                    text = dir.name.ifBlank { "." },
+                    color = if (index == pathSegments.lastIndex)
+                        MaterialTheme.colorScheme.primary else LocalContentColor.current,
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable { onFolderSelected(dir) }
+                        .padding(8.dp),
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                if (index != pathSegments.lastIndex) {
+                    Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
+                }
+            }
+        }
+        HorizontalScrollbar(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+                .padding(end = 12.dp),
+            adapter = rememberScrollbarAdapter(pathScrollState),
+            style = LocalScrollbarStyle.current.copy(
+                hoverColor = MaterialTheme.colorScheme.outline,
+                unhoverColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        )
+    }
+}
+
+@Composable
+private fun getFileIcon(file: File): Painter {
+    if (file.isDirectory) return painterResource(Res.drawable.folder)
+
+    val extension = file.extension.lowercase()
+    return when (extension) {
+        // Images
+        "webp" -> painterResource(Res.drawable.image)
+        "png" -> painterResource(Res.drawable.png)
+        "gif" -> painterResource(Res.drawable.gif)
+        "bmp" -> painterResource(Res.drawable.bmp)
+        "svg" -> painterResource(Res.drawable.svg)
+        "jpg", "jpeg" -> painterResource(Res.drawable.jpg)
+
+        // Docs
+        "pdf" -> painterResource(Res.drawable.pdf)
+        "doc", "docx" -> painterResource(Res.drawable.doc)
+        "xls", "xlsx" -> painterResource(Res.drawable.xls)
+        "ppt", "pptx" -> painterResource(Res.drawable.ppt)
+        "txt" -> painterResource(Res.drawable.txt)
+        "md" -> painterResource(Res.drawable.markdown)
+
+        // Code
+        "rb", "go", "rs" -> painterResource(Res.drawable.code)
+        "js" -> painterResource(Res.drawable.javascript)
+        "cs" -> painterResource(Res.drawable.csharp)
+        "php" -> painterResource(Res.drawable.php)
+        "ts" -> painterResource(Res.drawable.typescript)
+        "c" -> painterResource(Res.drawable.c)
+        "cpp" -> painterResource(Res.drawable.cplusplus)
+        "java" -> painterResource(Res.drawable.java)
+        "py" -> painterResource(Res.drawable.python)
+        "kt" -> painterResource(Res.drawable.kotlin)
+        "html", "htm" -> painterResource(Res.drawable.html5)
+        "htmx" -> painterResource(Res.drawable.htmx)
+        "css" -> painterResource(Res.drawable.css)
+        "xml" -> painterResource(Res.drawable.xml)
+        "yml", "yaml" -> painterResource(Res.drawable.yaml)
+        "json" -> painterResource(Res.drawable.json)
+        "db" -> painterResource(Res.drawable.sql)
+
+        // Archive
+        "rar", "7z", "tar", "gz" -> painterResource(Res.drawable.archive)
+        "zip" -> painterResource(Res.drawable.zip)
+
+        // Audio
+        "mp3", "wav", "flac", "aac", "ogg" -> painterResource(Res.drawable.audio)
+
+        // Video
+        "mp4", "avi", "mkv", "mov", "wmv", "flv" -> painterResource(Res.drawable.video)
+
+        // Fonts
+        "ttf", "otf", "woff", "woff2" -> painterResource(Res.drawable.font)
+
+        // Executable
+        "app" -> painterResource(Res.drawable.exe)
+        "exe" -> painterResource(Res.drawable.exe)
+        "msi" -> painterResource(Res.drawable.msi)
+        "rpm" -> painterResource(Res.drawable.rpm)
+        "dmg" -> painterResource(Res.drawable.dmg)
+        "deb" -> painterResource(Res.drawable.debian)
+
+        else -> painterResource(Res.drawable.document)
     }
 }
 
