@@ -4,14 +4,71 @@
 
 A library for desktop components designed for *Compose for Desktop* applications using Kotlin.
 
+
+## What's New in 1.2.0
+
+- **🖌️ Enhanced Visuals**: Added icon support to InfoDialog and ConfirmationDialog
+- **📊 Scrollbars**: All file dialogs now feature horizontal and vertical scrollbars
+- **🔍 Smart Folder Navigation**: Folders now show matching file counts in FileChooserDialog
+- **🎨 Visual File Types**: Rich file type icons for better user experience
+- **📱 Component-Based Architecture**: More maintainable and consistent UI across all dialogs
+
+*FileChooserDialog showing file type filtering, breadcrumb navigation with scrollbar, and folder matching counts*
+
+![File Chooser Dialog with File Extension Filtering](screenshots/filechooser3.png)
+
+*InfoDialog with custom icon and styled message*
+```kotlin
+InfoDialog(
+    title = "Debian",
+    icon = painterResource(Res.drawable.debian),
+    content = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("This is a custom message with")
+            Spacer(Modifier.height(8.dp))
+            Text("multiple components", fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(16.dp))
+            LinearProgressIndicator(modifier = Modifier.width(200.dp))
+        }
+    },
+    onClose = { showInfoDialog = false }
+)
+```
+
+![Information Dialog with Custom Icon](screenshots/infodialog.png)
+
+*FolderChooserDialog displaying both files (dimmed) and folders with scrollbars*
+
+![Folder Chooser Dialog with Files](screenshots/folderchooser1.png)
+
+*FileChooserDialog with badge and tooltip, showing how many files match the required extension*
+
+![File Chooser Dialog with Badge and Tooltip](screenshots/filechooser2.png)
+
+*ConfirmationDialog with warning icon*
+```kotlin
+ConfirmationDialog(
+    title = "Delete Project Files",
+    message = "This will permanently delete all project files. This action cannot be undone.",
+    icon = painterResource(Res.drawable.warning),
+    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.error),
+    confirmButtonText = "Delete",
+    cancelButtonText = "Cancel",
+    onConfirm = { showConfirmationDialog = false },
+    onCancel = { showConfirmationDialog = false }
+)
+```
+![Confirmation Dialog with Warning Icon](screenshots/confirmationdialog1.png)
+
+
 ---
 
 ## Features
 
-- 🗂️ **File System Dialogs**: Choose files, save files, and select folders
-- ✅ **Confirmation Dialogs**: User-friendly confirmation prompts with customizable messages
-- ℹ️ **Information Dialogs**: Clean information display with single-action acknowledgment
-- 🧭 **Breadcrumb Navigation**: Intuitive path navigation with clickable segments
+- 🗂️ **File System Dialogs**: Choose files, save files, and select folders - now with scrollbars and smart navigation
+- ✅ **Confirmation Dialogs**: User-friendly confirmation prompts with customizable messages and optional icons
+- ℹ️ **Information Dialogs**: Clean information display with single-action acknowledgment and custom icons
+- 🧭 **Breadcrumb Navigation**: Intuitive path navigation with clickable segments and horizontal scrolling
 
 ---
 
@@ -37,7 +94,7 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation("com.github.zahid4kh:deskit:1.1.1")
+    implementation("com.github.zahid4kh:deskit:1.2.0")
 }
 
 kotlin {
@@ -64,7 +121,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.zahid4kh:deskit:1.1.1")
+    implementation("com.github.zahid4kh:deskit:1.2.0")
 }
 ```
 
@@ -90,6 +147,8 @@ fun MyApp() {
         FileChooserDialog(
             title = "Select a File",
             allowedExtensions = listOf("txt", "pdf", "md"),
+            folderIconColor = MaterialTheme.colorScheme.tertiary, 
+            fileIconColor = MaterialTheme.colorScheme.primary,
             onFileSelected = { file ->
                 selectedFile = file
                 showFileDialog = false
@@ -132,6 +191,7 @@ fun SaveExample() {
 
 ```kotlin
 import dialogs.ConfirmationDialog
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ConfirmExample() {
@@ -145,6 +205,9 @@ fun ConfirmExample() {
         ConfirmationDialog(
             title = "Confirm Deletion",
             message = "Are you sure you want to delete this item?",
+            icon = painterResource(Res.drawable.warning),
+            confirmButtonText = "Delete", 
+            cancelButtonText = "Keep",
             onConfirm = {
                 // Perform deletion
                 showConfirmDialog = false
@@ -159,6 +222,7 @@ fun ConfirmExample() {
 
 ```kotlin
 import dialogs.InfoDialog
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun InfoExample() {
@@ -168,6 +232,8 @@ fun InfoExample() {
         InfoDialog(
             title = "Success",
             message = "Your file has been saved successfully!",
+            icon = painterResource(Res.drawable.success), 
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
             onClose = { showInfoDialog = false }
         )
     }
@@ -194,6 +260,29 @@ fun FolderExample() {
         )
     }
 }
+```
+
+---
+
+## Custom Content in Dialogs
+
+New in 1.2.0, you can provide custom content to both InfoDialog and ConfirmationDialog:
+
+```kotlin
+InfoDialog(
+    title = "Custom Content",
+    icon = painterResource(Res.drawable.info),
+    content = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("This is a custom message with")
+            Spacer(Modifier.height(8.dp))
+            Text("multiple components", fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(16.dp))
+            LinearProgressIndicator(modifier = Modifier.width(200.dp))
+        }
+    },
+    onClose = {  }
+)
 ```
 
 ---
