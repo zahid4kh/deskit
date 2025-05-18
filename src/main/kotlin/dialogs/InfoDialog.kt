@@ -16,6 +16,7 @@ limitations under the License.
 
 package dialogs
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -32,13 +35,18 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 
 /**
- * Displays a modal information dialog with a custom title, message, and single OK button.
+ * Displays a modal information dialog with a custom title, message, optional image, and single OK button.
  *
  * This dialog is typically used to show non-critical information to the user that only requires
- * acknowledgment. The dialog is centered on screen and has a fixed size.
+ * acknowledgment. The dialog is centered on screen and has a size that adapts to content.
  *
  * @param title The title text displayed in the dialog window's title bar. Defaults to "Information".
  * @param message The main message text displayed in the center of the dialog. Defaults to "Information message".
+ * @param icon Optional icon/image to display at the top of the dialog to make it more visually appealing.
+ * @param colorFilter Color filter to apply to the icon if provided.
+ * @param iconSize Size of the icon if provided. Defaults to 64.dp.
+ * @param content Optional composable content to replace the standard message. Can be used for
+ *                custom layout, rich text, or more complex information displays.
  * @param onClose Callback function invoked when the user clicks OK or closes the dialog.
  *
  * @sample dialogs.InfoDialogSample
@@ -47,10 +55,24 @@ import androidx.compose.ui.window.rememberDialogState
 fun InfoDialog(
     title: String = "Information",
     message: String = "Information message",
+    icon: Painter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+    iconSize: DpSize = DpSize(64.dp, 64.dp),
+    content: @Composable () -> Unit = {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+    },
     onClose: () -> Unit
 ) {
+    val dialogWidth = if (icon != null) 500.dp else 450.dp
+    val dialogHeight = if (icon != null) 280.dp else 230.dp
+
     val dialogState = rememberDialogState(
-        size = DpSize(450.dp, 230.dp),
+        size = DpSize(dialogWidth, dialogHeight),
         position = WindowPosition(Alignment.Center)
     )
 
@@ -68,14 +90,25 @@ fun InfoDialog(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.height(8.dp))
+                if (icon != null) {
+                    Spacer(Modifier.height(4.dp))
+                    Image(
+                        painter = icon,
+                        contentDescription = null,
+                        colorFilter = colorFilter,
+                        modifier = Modifier.size(iconSize.width, iconSize.height)
+                    )
+                    Spacer(Modifier.height(16.dp))
+                } else {
+                    Spacer(Modifier.height(8.dp))
+                }
 
-                Text(
-                    text = message,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
-                )
+                Box(
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    content()
+                }
 
                 Button(
                     onClick = onClose,
