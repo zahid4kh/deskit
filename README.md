@@ -7,6 +7,7 @@ A library for desktop components designed for *Compose for Desktop* applications
 ## Table of Contents
 
 - [What's New in 1.2.0](#whats-new-in-120)
+    - [Demo Video](#demo-video)
     - [Screenshots](#screenshots)
 - [Features](#features)
 - [Installation](#installation)
@@ -30,6 +31,12 @@ A library for desktop components designed for *Compose for Desktop* applications
 - **🔍 Smart Folder Navigation**: Folders now show matching file counts in FileChooserDialog
 - **🎨 Visual File Types**: Rich file type icons for better user experience
 - **📱 Component-Based Architecture**: More maintainable and consistent UI across all dialogs
+
+## Demo Video
+
+FolderChooserDialog in action:
+
+<video src="https://github.com/user-attachments/assets/9abeeb1c-91d7-43ff-b800-d163214973e0" width="640" controls></video>
 
 ### Screenshots
 
