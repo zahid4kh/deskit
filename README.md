@@ -4,6 +4,24 @@
 
 A library for desktop components designed for *Compose for Desktop* applications using Kotlin.
 
+## Table of Contents
+
+- [What's New in 1.2.0](#whats-new-in-120)
+    - [Screenshots](#screenshots)
+- [Features](#features)
+- [Installation](#installation)
+    - [Option 1: build.gradle.kts](#option-1-if-you-manage-repositories-in-buildgradlekts)
+    - [Option 2: settings.gradle.kts](#option-2-if-you-manage-repositories-in-settingsgradlekts)
+- [Quick Start](#quick-start)
+    - [File Chooser Dialog](#file-chooser-dialog)
+    - [File Saver Dialog](#file-saver-dialog)
+    - [Confirmation Dialog](#confirmation-dialog)
+    - [Info Dialog](#info-dialog)
+    - [Folder Chooser Dialog](#folder-chooser-dialog)
+- [Custom Content in Dialogs](#custom-content-in-dialogs)
+- [API Documentation](#api-documentation)
+- [Requirements](#requirements)
+- [License](#license)
 
 ## What's New in 1.2.0
 
@@ -12,6 +30,8 @@ A library for desktop components designed for *Compose for Desktop* applications
 - **🔍 Smart Folder Navigation**: Folders now show matching file counts in FileChooserDialog
 - **🎨 Visual File Types**: Rich file type icons for better user experience
 - **📱 Component-Based Architecture**: More maintainable and consistent UI across all dialogs
+
+### Screenshots
 
 *FileChooserDialog showing file type filtering, breadcrumb navigation with scrollbar, and folder matching counts*
 
