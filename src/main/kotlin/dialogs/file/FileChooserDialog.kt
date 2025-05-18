@@ -17,23 +17,29 @@ limitations under the License.
 package dialogs.file
 
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleLeft
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
@@ -68,6 +74,7 @@ import java.io.File
  *
  * @sample dialogs.file.FileChooserDialogSample
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FileChooserDialog(
     title: String = "Choose File",
@@ -107,37 +114,17 @@ fun FileChooserDialog(
 
         Surface(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.padding(16.dp)) {
-                Text("Choose File", style = MaterialTheme.typography.titleLarge)
+
+                FileFilterSection(
+                    allowedExtensions = allowedExtensions
+                )
 
                 Spacer(Modifier.height(8.dp))
 
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                ){
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        modifier = Modifier
-                            .horizontalScroll(rememberScrollState())
-                            .padding(bottom = 8.dp)
-                    ) {
-                        pathSegments.forEachIndexed { index, dir ->
-                            Text(
-                                text = dir.name.ifBlank { "." },
-                                color = if (index == pathSegments.lastIndex)
-                                    MaterialTheme.colorScheme.primary else LocalContentColor.current,
-                                modifier = Modifier
-                                    .clip(MaterialTheme.shapes.medium)
-                                    .clickable { currentDir = dir }
-                                    .padding(8.dp),
-                                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
-                            )
-                            if (index != pathSegments.lastIndex) {
-                                Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
-                            }
-                        }
-                    }
-                }
+                PathSegments(
+                    pathSegments = pathSegments,
+                    onPathSelected = { currentDir = it }
+                )
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -168,30 +155,16 @@ fun FileChooserDialog(
 
                 Spacer(Modifier.height(8.dp))
 
-                LazyColumn(Modifier.weight(1f)) {
-                    items(files) { file ->
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.medium)
-                                .clickable {
-                                    if (file.isDirectory) currentDir = file
-                                    else onFileSelected(file)
-                                }
-                                .padding(9.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = getFileIcon(file),
-                                contentDescription = null,
-                                tint = if (file.isDirectory) folderIconColor else fileIconColor,
-                                modifier = Modifier.size(22.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(file.name, overflow = TextOverflow.Ellipsis)
-                        }
-                    }
-                }
+                FileAndFolderSection(
+                    files = files,
+                    allowedExtensions = allowedExtensions,
+                    folderIconColor = folderIconColor,
+                    fileIconColor = fileIconColor,
+                    onDirectorySelected = { currentDir = it },
+                    onFileSelected = onFileSelected,
+                    modifier = Modifier.weight(1f)
+                )
+
 
                 Spacer(Modifier.height(8.dp))
 
@@ -217,6 +190,214 @@ fun FileChooserDialog(
         }
     }
 }
+
+@Composable
+fun FileFilterSection(
+    allowedExtensions: List<String>?
+){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("Choose File", style = MaterialTheme.typography.titleLarge)
+
+            if (allowedExtensions != null && allowedExtensions.isNotEmpty()) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    ),
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FilterAlt,
+                            contentDescription = "File filters",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(SpanStyle(fontWeight = FontWeight.Medium)) {
+                                    append("Allowed: ")
+                                }
+                                withStyle(
+                                    SpanStyle(
+                                        fontStyle = FontStyle.Italic,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                ) {
+                                    append(allowedExtensions.joinToString(", ") { ".$it" })
+                                }
+                            },
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PathSegments(
+    pathSegments: List<File>,
+    onPathSelected: (File) -> Unit
+){
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ){
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(bottom = 8.dp)
+        ) {
+            pathSegments.forEachIndexed { index, dir ->
+                Text(
+                    text = dir.name.ifBlank { "." },
+                    color = if (index == pathSegments.lastIndex)
+                        MaterialTheme.colorScheme.primary else LocalContentColor.current,
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable { onPathSelected(dir) }
+                        .padding(8.dp),
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                if (index != pathSegments.lastIndex) {
+                    Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun FileAndFolderSection(
+    files: List<File>,
+    allowedExtensions: List<String>?,
+    folderIconColor: Color,
+    fileIconColor: Color,
+    onDirectorySelected: (File) -> Unit,
+    onFileSelected: (File) -> Unit,
+    modifier: Modifier = Modifier,
+){
+    Box(modifier = modifier){
+        LazyColumn {
+            items(files) { file ->
+                if (file.isDirectory) {
+                    val matchingFilesCount = remember(file, allowedExtensions) {
+                        if (allowedExtensions == null) {
+                            null
+                        } else {
+                            file.listFiles()
+                                ?.count { childFile ->
+                                    !childFile.isDirectory && allowedExtensions.any { ext ->
+                                        childFile.name.endsWith(".$ext", ignoreCase = true)
+                                    }
+                                } ?: 0
+                        }
+                    }
+
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text(
+                                    text = if (matchingFilesCount != null) {
+                                        "$matchingFilesCount matching file${if (matchingFilesCount != 1) "s" else ""}"
+                                    } else {
+                                        "Folder: ${file.name}"
+                                    },
+                                    modifier = Modifier.padding(10.dp),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        },
+                        delayMillis = 300,
+                        tooltipPlacement = TooltipPlacement.CursorPoint(
+                            offset = DpOffset(0.dp, 16.dp)
+                        )
+                    ) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(MaterialTheme.shapes.medium)
+                                .clickable { onDirectorySelected(file) }
+                                .padding(9.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.folder),
+                                contentDescription = null,
+                                tint = folderIconColor,
+                                modifier = Modifier.size(22.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(file.name, overflow = TextOverflow.Ellipsis)
+
+                                if (matchingFilesCount != null && matchingFilesCount > 0) {
+                                    Surface(
+                                        shape = RoundedCornerShape(12.dp),
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    ) {
+                                        Text(
+                                            text = "$matchingFilesCount",
+                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(MaterialTheme.shapes.medium)
+                            .clickable { onFileSelected(file) }
+                            .padding(9.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = getFileIcon(file),
+                            contentDescription = null,
+                            tint = fileIconColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(file.name, overflow = TextOverflow.Ellipsis)
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
 
 /**
  * Determines the appropriate Material icon for a given file based on its type and extension.
