@@ -104,6 +104,11 @@ fun FileChooserDialog(
 
     val dialogState = rememberDialogState(size = DpSize(600.dp, 600.dp), position = WindowPosition(Alignment.Center))
 
+    val pathScrollState = rememberScrollState()
+    LaunchedEffect(pathSegments) {
+        pathScrollState.animateScrollTo(pathScrollState.maxValue)
+    }
+
     DialogWindow(
         title = title,
         state = dialogState,
@@ -123,7 +128,8 @@ fun FileChooserDialog(
 
                 PathSegments(
                     pathSegments = pathSegments,
-                    onPathSelected = { currentDir = it }
+                    onPathSelected = { currentDir = it },
+                    scrollState = pathScrollState
                 )
 
                 Row(
@@ -251,17 +257,21 @@ fun FileFilterSection(
 @Composable
 fun PathSegments(
     pathSegments: List<File>,
-    onPathSelected: (File) -> Unit
+    onPathSelected: (File) -> Unit,
+    scrollState: ScrollState
 ){
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+        //.height(70.dp)
+        //.border(1.dp, MaterialTheme.colorScheme.outline)
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(bottom = 8.dp)
+                .horizontalScroll(scrollState)
+                .padding(bottom = 8.dp, end = 12.dp)
         ) {
             pathSegments.forEachIndexed { index, dir ->
                 Text(
@@ -279,6 +289,17 @@ fun PathSegments(
                 }
             }
         }
+        HorizontalScrollbar(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+                .padding(end = 12.dp),
+            adapter = rememberScrollbarAdapter(scrollState),
+            style = LocalScrollbarStyle.current.copy(
+                hoverColor = MaterialTheme.colorScheme.outline,
+                unhoverColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        )
     }
 }
 
