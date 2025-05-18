@@ -24,22 +24,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Article
-import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
-import androidx.compose.material.icons.automirrored.filled.TextSnippet
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowCircleLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.resources.*
+import org.jetbrains.compose.resources.painterResource
+import java.awt.Dimension
 import java.io.File
 
 /**
@@ -71,6 +73,8 @@ fun FileChooserDialog(
     title: String = "Choose File",
     startDirectory: File = File(System.getProperty("user.home") + "/Downloads"),
     allowedExtensions: List<String>? = null,
+    folderIconColor: Color = MaterialTheme.colorScheme.tertiary,
+    fileIconColor: Color = MaterialTheme.colorScheme.primary,
     onFileSelected: (File) -> Unit,
     onCancel: () -> Unit
 ) {
@@ -80,7 +84,7 @@ fun FileChooserDialog(
             ?.filter {
                 !it.name.startsWith(".") &&
                         (it.isDirectory || allowedExtensions == null || allowedExtensions.any {
-                                    ext -> it.name.endsWith(ext, ignoreCase = true)
+                                ext -> it.name.endsWith(ext, ignoreCase = true)
                         })
             }
             ?.sortedWith(compareBy({ !it.isDirectory }, { it.name }))
@@ -96,38 +100,73 @@ fun FileChooserDialog(
     DialogWindow(
         title = title,
         state = dialogState,
-        onCloseRequest = onCancel,
-        resizable = false
+        onCloseRequest = onCancel
     ) {
+        window.minimumSize = Dimension(600, 600)
+        window.undecoratedResizerThickness = 2.dp
+
         Surface(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.padding(16.dp)) {
-                Text("Current Directory", style = MaterialTheme.typography.titleLarge)
+                Text("Choose File", style = MaterialTheme.typography.titleLarge)
 
                 Spacer(Modifier.height(8.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier
-                        .horizontalScroll(rememberScrollState())
-                        .padding(bottom = 8.dp)
-                ) {
-                    pathSegments.forEachIndexed { index, dir ->
-                        Text(
-                            text = dir.name.ifBlank { "Home" },
-                            color = if (index == pathSegments.lastIndex)
-                                MaterialTheme.colorScheme.primary else LocalContentColor.current,
-                            modifier = Modifier
-                                .clip(MaterialTheme.shapes.medium)
-                                .clickable { currentDir = dir }
-                                .padding(8.dp),
-                            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
-                        )
-                        if (index != pathSegments.lastIndex) {
-                            Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier
+                            .horizontalScroll(rememberScrollState())
+                            .padding(bottom = 8.dp)
+                    ) {
+                        pathSegments.forEachIndexed { index, dir ->
+                            Text(
+                                text = dir.name.ifBlank { "." },
+                                color = if (index == pathSegments.lastIndex)
+                                    MaterialTheme.colorScheme.primary else LocalContentColor.current,
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .clickable { currentDir = dir }
+                                    .padding(8.dp),
+                                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                            )
+                            if (index != pathSegments.lastIndex) {
+                                Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
+                            }
                         }
                     }
                 }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ){
+                        if (currentDir.parentFile != null) {
+                            IconButton(
+                                onClick = {
+                                    currentDir.parentFile?.let { parent ->
+                                        currentDir = parent
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowCircleLeft,
+                                    contentDescription = "Back"
+                                )
+                            }
+                        }
+                        Spacer(Modifier.width(3.dp))
+                        Text("Current Directory", style = MaterialTheme.typography.labelLarge)
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
 
                 LazyColumn(Modifier.weight(1f)) {
                     items(files) { file ->
@@ -139,15 +178,17 @@ fun FileChooserDialog(
                                     if (file.isDirectory) currentDir = file
                                     else onFileSelected(file)
                                 }
-                                .padding(9.dp)
+                                .padding(9.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                imageVector = getFileIcon(file),
+                                painter = getFileIcon(file),
                                 contentDescription = null,
-                                tint = if (file.isDirectory) MaterialTheme.colorScheme.primary else LocalContentColor.current
+                                tint = if (file.isDirectory) folderIconColor else fileIconColor,
+                                modifier = Modifier.size(22.dp)
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text(file.name)
+                            Text(file.name, overflow = TextOverflow.Ellipsis)
                         }
                     }
                 }
@@ -155,7 +196,22 @@ fun FileChooserDialog(
                 Spacer(Modifier.height(8.dp))
 
                 Row(Modifier.align(Alignment.End)) {
-                    TextButton(onClick = onCancel) { Text("Cancel") }
+                    TextButton(onClick = onCancel) {
+                        Text("Cancel", color = MaterialTheme.colorScheme.error)
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Button(
+                        onClick = {
+                            val selectedFile = currentDir.listFiles()?.firstOrNull { !it.isDirectory }
+                            if (selectedFile != null) {
+                                onFileSelected(selectedFile)
+                            }
+                        },
+                        enabled = files.any { !it.isDirectory },
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text("Select")
+                    }
                 }
             }
         }
@@ -183,44 +239,68 @@ fun FileChooserDialog(
  *
  * Files without recognized extensions receive a generic file icon.
  */
-private fun getFileIcon(file: File): ImageVector {
-    if (file.isDirectory) return Icons.Default.Folder
+@Composable
+private fun getFileIcon(file: File): Painter {
+    if (file.isDirectory) return painterResource(Res.drawable.folder)
 
     val extension = file.extension.lowercase()
     return when (extension) {
         // Images
-        "png", "jpg", "jpeg", "gif", "bmp", "webp", "svg" -> Icons.Default.Image
+        "webp" -> painterResource(Res.drawable.image)
+        "png" -> painterResource(Res.drawable.png)
+        "gif" -> painterResource(Res.drawable.gif)
+        "bmp" -> painterResource(Res.drawable.bmp)
+        "svg" -> painterResource(Res.drawable.svg)
+        "jpg", "jpeg" -> painterResource(Res.drawable.jpg)
 
         // Docs
-        "pdf" -> Icons.Default.PictureAsPdf
-        "doc", "docx" -> Icons.Default.Description
-        "xls", "xlsx" -> Icons.Default.TableChart
-        "ppt", "pptx" -> Icons.Default.Slideshow
-        "txt" -> Icons.AutoMirrored.Filled.TextSnippet
-        "md" -> Icons.AutoMirrored.Filled.Article
+        "pdf" -> painterResource(Res.drawable.pdf)
+        "doc", "docx" -> painterResource(Res.drawable.doc)
+        "xls", "xlsx" -> painterResource(Res.drawable.xls)
+        "ppt", "pptx" -> painterResource(Res.drawable.ppt)
+        "txt" -> painterResource(Res.drawable.txt)
+        "md" -> painterResource(Res.drawable.markdown)
 
         // Code
-        "kt", "java", "js", "ts", "py", "cpp", "c", "cs", "php", "rb", "go", "rs" -> Icons.Default.Code
-        "html", "htm" -> Icons.Default.Html
-        "css" -> Icons.Default.Css
-        "json", "xml", "yaml", "yml" -> Icons.Default.DataObject
-
+        "rb", "go", "rs" -> painterResource(Res.drawable.code)
+        "js" -> painterResource(Res.drawable.javascript)
+        "cs" -> painterResource(Res.drawable.csharp)
+        "php" -> painterResource(Res.drawable.php)
+        "ts" -> painterResource(Res.drawable.typescript)
+        "c" -> painterResource(Res.drawable.c)
+        "cpp" -> painterResource(Res.drawable.cplusplus)
+        "java" -> painterResource(Res.drawable.java)
+        "py" -> painterResource(Res.drawable.python)
+        "kt" -> painterResource(Res.drawable.kotlin)
+        "html", "htm" -> painterResource(Res.drawable.html5)
+        "htmx" -> painterResource(Res.drawable.htmx)
+        "css" -> painterResource(Res.drawable.css)
+        "xml" -> painterResource(Res.drawable.xml)
+        "yml", "yaml" -> painterResource(Res.drawable.yaml)
+        "json" -> painterResource(Res.drawable.json)
+        "db" -> painterResource(Res.drawable.sql)
         // Archive
-        "zip", "rar", "7z", "tar", "gz" -> Icons.Default.Archive
+        "rar", "7z", "tar", "gz" -> painterResource(Res.drawable.archive)
+        "zip" -> painterResource(Res.drawable.zip)
 
         // Audio
-        "mp3", "wav", "flac", "aac", "ogg" -> Icons.Default.AudioFile
+        "mp3", "wav", "flac", "aac", "ogg" -> painterResource(Res.drawable.audio)
 
         // Video
-        "mp4", "avi", "mkv", "mov", "wmv", "flv" -> Icons.Default.VideoFile
+        "mp4", "avi", "mkv", "mov", "wmv", "flv" -> painterResource(Res.drawable.video)
 
         // Fonts
-        "ttf", "otf", "woff", "woff2" -> Icons.Default.FontDownload
+        "ttf", "otf", "woff", "woff2" -> painterResource(Res.drawable.font)
 
         // Executable
-        "exe", "app", "deb", "rpm" -> Icons.Default.Storage
+        "app" -> painterResource(Res.drawable.exe)
+        "exe" -> painterResource(Res.drawable.exe)
+        "msi" -> painterResource(Res.drawable.msi)
+        "rpm" -> painterResource(Res.drawable.rpm)
+        "dmg" -> painterResource(Res.drawable.dmg)
+        "deb" -> painterResource(Res.drawable.debian)
 
-        else -> Icons.AutoMirrored.Filled.InsertDriveFile
+        else -> painterResource(Res.drawable.document)
     }
 }
 
