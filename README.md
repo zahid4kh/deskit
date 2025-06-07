@@ -121,7 +121,7 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation("com.github.zahid4kh:deskit:1.2.0")
+    implementation("com.github.zahid4kh:deskit:1.2.1")
 }
 
 kotlin {
@@ -148,7 +148,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.zahid4kh:deskit:1.2.0")
+    implementation("com.github.zahid4kh:deskit:1.2.1")
 }
 ```
 
@@ -159,8 +159,6 @@ dependencies {
 ### File Chooser Dialog
 
 ```kotlin
-import dialogs.file.FileChooserDialog
-
 @Composable
 fun MyApp() {
     var showFileDialog by remember { mutableStateOf(false) }
@@ -189,8 +187,6 @@ fun MyApp() {
 ### File Saver Dialog
 
 ```kotlin
-import dialogs.file.FileSaverDialog
-
 @Composable
 fun SaveExample() {
     var showSaveDialog by remember { mutableStateOf(false) }
@@ -217,9 +213,6 @@ fun SaveExample() {
 ### Confirmation Dialog
 
 ```kotlin
-import dialogs.ConfirmationDialog
-import org.jetbrains.compose.resources.painterResource
-
 @Composable
 fun ConfirmExample() {
     var showConfirmDialog by remember { mutableStateOf(false) }
@@ -248,9 +241,6 @@ fun ConfirmExample() {
 ### Info Dialog
 
 ```kotlin
-import dialogs.InfoDialog
-import org.jetbrains.compose.resources.painterResource
-
 @Composable
 fun InfoExample() {
     var showInfoDialog by remember { mutableStateOf(false) }
@@ -270,8 +260,6 @@ fun InfoExample() {
 ### Folder Chooser Dialog
 
 ```kotlin
-import dialogs.file.FolderChooserDialog
-
 @Composable
 fun FolderExample() {
     var showFolderDialog by remember { mutableStateOf(false) }
@@ -293,7 +281,7 @@ fun FolderExample() {
 
 ## Custom Content in Dialogs
 
-New in 1.2.0, you can provide custom content to both InfoDialog and ConfirmationDialog:
+New in 1.2.1, you can provide custom content to both InfoDialog and ConfirmationDialog:
 
 ```kotlin
 InfoDialog(
