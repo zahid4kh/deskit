@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package dialogs.file
+package deskit.dialogs.file
 
 
 import androidx.compose.foundation.*
@@ -74,7 +74,7 @@ import java.io.File
  * - Optional file extension filtering
  * - Color-coded folders with primary theme color
  *
- * @sample dialogs.file.FileChooserDialogSample
+ * @sample deskit.dialogs.file.FileChooserDialogSample
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -550,7 +550,7 @@ private fun getFileIcon(file: File): Painter {
  * [FileChooserDialog], including handling file selection and cancellation events,
  * within a Composable UI.
  *
- * @sample dialogs.file.FileChooserDialogSample
+ * @sample deskit.dialogs.file.FileChooserDialogSample
  */
 @Composable
 fun FileChooserDialogSample(){

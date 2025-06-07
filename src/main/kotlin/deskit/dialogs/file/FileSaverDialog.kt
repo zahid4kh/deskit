@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package dialogs.file
+package deskit.dialogs.file
 
 
 import androidx.compose.animation.*
@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.dialogs.InfoDialog
 import deskit.resources.*
-import dialogs.InfoDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -67,7 +67,7 @@ import java.io.File
  * - File existence validation
  * - Back button for parent directory navigation
  *
- * @sample dialogs.file.FileSaverDialogSample
+ * @sample deskit.dialogs.file.FileSaverDialogSample
  */
 @Composable
 fun FileSaverDialog(
@@ -563,7 +563,7 @@ private fun getFileIcon(file: File): Painter {
  * [FileSaverDialog], including handling file saving and cancellation events,
  * within a Composable UI.
  *
- * @sample dialogs.file.FileSaverDialogSample
+ * @sample deskit.dialogs.file.FileSaverDialogSample
  */
 @Composable
 fun FileSaverDialogSample(){

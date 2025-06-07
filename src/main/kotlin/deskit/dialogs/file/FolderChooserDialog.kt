@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package dialogs.file
+package deskit.dialogs.file
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.dialogs.InfoDialog
 import deskit.resources.*
-import dialogs.InfoDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -65,7 +65,7 @@ import java.io.File
  * - User guidance through InfoDialog when attempting to select files
  * - Folder content browsing with vertical scrollbar
  *
- * @sample dialogs.file.FolderChooserDialogSample
+ * @sample deskit.dialogs.file.FolderChooserDialogSample
  */
 @Composable
 fun FolderChooserDialog(
@@ -411,7 +411,7 @@ private fun getFileIcon(file: File): Painter {
  * [FolderChooserDialog], including handling folder selection and cancellation events,
  * within a Composable UI.
  *
- * @sample dialogs.file.FolderChooserDialogSample
+ * @sample deskit.dialogs.file.FolderChooserDialogSample
  */
 @Composable
 private fun FolderChooserDialogSample(){
