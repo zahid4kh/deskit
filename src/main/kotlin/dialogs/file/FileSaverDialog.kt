@@ -188,7 +188,8 @@ fun FileSaverDialog(
                 // Action buttons
                 Row(Modifier.align(Alignment.End)) {
                     TextButton(onClick = onCancel) {
-                        Text("Cancel", color = MaterialTheme.colorScheme.error)
+                        Text("Cancel", color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium)
                     }
                     Spacer(Modifier.width(8.dp))
                     Button(
@@ -208,7 +209,7 @@ fun FileSaverDialog(
                         enabled = fileName.isNotBlank(),
                         shape = MaterialTheme.shapes.medium
                     ) {
-                        Text("Save")
+                        Text("Save", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
             }
@@ -336,10 +337,11 @@ private fun FileNameInputSection(
         OutlinedTextField(
             value = fileName,
             onValueChange = onFileNameChanged,
-            label = { Text("File name") },
+            label = { Text("File name", style = MaterialTheme.typography.bodyMedium) },
             modifier = Modifier.weight(1f),
             shape = MaterialTheme.shapes.large,
-            placeholder = { Text("Enter filename${extension}") },
+            placeholder = { Text("Enter filename${extension}",
+                style = MaterialTheme.typography.bodyMedium) },
             supportingText = {
                 Text(
                     "Extension $extension will be added automatically",
@@ -392,7 +394,11 @@ private fun FilesAndFoldersListSection(
                                 modifier = Modifier.size(22.dp)
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text(item.name, overflow = TextOverflow.Ellipsis)
+                            Text(
+                                text = item.name,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     } else {
                         Row(
@@ -411,7 +417,8 @@ private fun FilesAndFoldersListSection(
                             Text(
                                 text = item.name,
                                 overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }
@@ -449,7 +456,7 @@ private fun NewFolderCreationSection(
             OutlinedTextField(
                 value = folderName,
                 onValueChange = onFolderNameChanged,
-                label = { Text("New Folder Name") },
+                label = { Text("New Folder Name", style = MaterialTheme.typography.bodyMedium) },
                 modifier = Modifier.weight(1f),
                 shape = MaterialTheme.shapes.large
             )
@@ -457,7 +464,7 @@ private fun NewFolderCreationSection(
             TextButton(
                 onClick = onCancel
             ) {
-                Text("Cancel", color = MaterialTheme.colorScheme.error)
+                Text("Cancel", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
             }
             Spacer(Modifier.width(3.dp))
             OutlinedButton(
@@ -465,7 +472,7 @@ private fun NewFolderCreationSection(
                 enabled = folderName.isNotBlank(),
                 shape = MaterialTheme.shapes.medium
             ) {
-                Text("Create")
+                Text(text = "Create", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

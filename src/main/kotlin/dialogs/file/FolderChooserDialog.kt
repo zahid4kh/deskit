@@ -65,7 +65,7 @@ import java.io.File
  * - User guidance through InfoDialog when attempting to select files
  * - Folder content browsing with vertical scrollbar
  *
- * @sample FolderChooserDialogSample
+ * @sample dialogs.file.FolderChooserDialogSample
  */
 @Composable
 fun FolderChooserDialog(
@@ -215,14 +215,15 @@ private fun FilesAndFoldersListSection(
                             Icon(
                                 painter = getFileIcon(item),
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
+                                tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f), // Dimmed to indicate non-selectability
                                 modifier = Modifier.size(22.dp)
                             )
                             Spacer(Modifier.width(8.dp))
                             Text(
                                 text = item.name,
                                 overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), // Dimmed text
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }
@@ -395,7 +396,6 @@ private fun getFileIcon(file: File): Painter {
     }
 }
 
-
 /**
  * A sample composable function demonstrating the usage of the [FolderChooserDialog].
  *
@@ -414,7 +414,7 @@ private fun getFileIcon(file: File): Painter {
  * @sample dialogs.file.FolderChooserDialogSample
  */
 @Composable
-fun FolderChooserDialogSample(){
+private fun FolderChooserDialogSample(){
     var showFolderChooserDialog by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
 

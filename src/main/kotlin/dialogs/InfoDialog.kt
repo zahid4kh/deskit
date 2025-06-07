@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
@@ -43,7 +44,6 @@ import androidx.compose.ui.window.rememberDialogState
  * @param title The title text displayed in the dialog window's title bar. Defaults to "Information".
  * @param message The main message text displayed in the center of the dialog. Defaults to "Information message".
  * @param icon Optional icon/image to display at the top of the dialog to make it more visually appealing.
- * @param colorFilter Color filter to apply to the icon if provided.
  * @param iconSize Size of the icon if provided. Defaults to 64.dp.
  * @param content Optional composable content to replace the standard message. Can be used for
  *                custom layout, rich text, or more complex information displays.
@@ -53,6 +53,8 @@ import androidx.compose.ui.window.rememberDialogState
  */
 @Composable
 fun InfoDialog(
+    width: Dp = 450.dp,
+    height: Dp = 230.dp,
     title: String = "Information",
     message: String = "Information message",
     icon: Painter? = null,
@@ -68,8 +70,8 @@ fun InfoDialog(
     },
     onClose: () -> Unit
 ) {
-    val dialogWidth = if (icon != null) 500.dp else 450.dp
-    val dialogHeight = if (icon != null) 280.dp else 230.dp
+    val dialogWidth = width
+    val dialogHeight = height
 
     val dialogState = rememberDialogState(
         size = DpSize(dialogWidth, dialogHeight),

@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
@@ -56,6 +57,8 @@ import androidx.compose.ui.window.rememberDialogState
  */
 @Composable
 fun ConfirmationDialog(
+    width: Dp = 450.dp,
+    height: Dp = 230.dp,
     title: String = "Confirmation",
     message: String = "Please confirm to proceed",
     icon: Painter? = null,
@@ -75,8 +78,11 @@ fun ConfirmationDialog(
     onCancel: () -> Unit,
     onClose: () -> Unit = onCancel
 ) {
-    val dialogWidth = if (icon != null) 500.dp else 450.dp
-    val dialogHeight = if (icon != null) 280.dp else 230.dp
+//    val dialogWidth = if (icon != null) 500.dp else 450.dp
+//    val dialogHeight = if (icon != null) 280.dp else 230.dp
+
+    val dialogWidth = width
+    val dialogHeight = height
 
     val dialogState = rememberDialogState(
         size = DpSize(dialogWidth, dialogHeight),

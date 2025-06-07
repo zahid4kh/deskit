@@ -87,6 +87,7 @@ fun FileChooserDialog(
     onFileSelected: (File) -> Unit,
     onCancel: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
     var currentDir by remember { mutableStateOf(startDirectory) }
     val files = remember(currentDir) {
         currentDir.listFiles()
@@ -107,7 +108,7 @@ fun FileChooserDialog(
     val dialogState = rememberDialogState(size = DpSize(600.dp, 600.dp), position = WindowPosition(Alignment.Center))
 
     val pathScrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(pathSegments) {
         pathScrollState.animateScrollTo(pathScrollState.maxValue)
     }
@@ -206,7 +207,7 @@ fun FileChooserDialog(
 }
 
 @Composable
-fun FileFilterSection(
+private fun FileFilterSection(
     allowedExtensions: List<String>?
 ){
     Row(
@@ -263,7 +264,7 @@ fun FileFilterSection(
 }
 
 @Composable
-fun PathSegments(
+private fun PathSegments(
     pathSegments: List<File>,
     onPathSelected: (File) -> Unit,
     scrollState: ScrollState
@@ -271,8 +272,8 @@ fun PathSegments(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-        //.height(70.dp)
-        //.border(1.dp, MaterialTheme.colorScheme.outline)
+            //.height(70.dp)
+            //.border(1.dp, MaterialTheme.colorScheme.outline)
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -313,7 +314,7 @@ fun PathSegments(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FileAndFolderSection(
+private fun FileAndFolderSection(
     files: List<File>,
     allowedExtensions: List<String>?,
     folderIconColor: Color,
@@ -390,7 +391,8 @@ fun FileAndFolderSection(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(file.name, overflow = TextOverflow.Ellipsis)
+                                    Text(file.name, overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.bodyMedium)
 
                                     if (matchingFilesCount != null && matchingFilesCount > 0) {
                                         Surface(
@@ -425,7 +427,8 @@ fun FileAndFolderSection(
                                 modifier = Modifier.size(22.dp)
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text(file.name, overflow = TextOverflow.Ellipsis)
+                            Text(file.name, overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
