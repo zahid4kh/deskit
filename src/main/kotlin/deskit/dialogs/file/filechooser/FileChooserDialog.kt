@@ -49,6 +49,8 @@ import java.io.File
  *                       Defaults to the user's Downloads folder.
  * @param allowedExtensions Optional list of file extensions to filter by (e.g., ["txt", "pdf"]).
  *                          If null, all files are shown. Extensions are case-insensitive.
+ * @param folderIconColor The color applied to folder icons. Defaults to tertiary theme color.
+ * @param fileIconColor The color applied to file icons. Defaults to primary theme color.
  * @param onFileSelected Callback function invoked with the selected File when the user clicks a file.
  * @param onCancel Callback function invoked when the user cancels the operation.
  *
@@ -69,7 +71,7 @@ fun FileChooserDialog(
     allowedExtensions: List<String>? = null,
     folderIconColor: Color = MaterialTheme.colorScheme.tertiary,
     fileIconColor: Color = MaterialTheme.colorScheme.primary,
-    isFileInfoDialogResizable: Boolean = true,
+    resizableFileInfoDialog: Boolean = true,
     onFileSelected: (File) -> Unit,
     onCancel: () -> Unit
 ) {
@@ -104,7 +106,7 @@ fun FileChooserDialog(
         FileInfoDialog(
             file = file,
             onClose = { selectedFileForInfo = null },
-            resizable = isFileInfoDialogResizable
+            resizable = resizableFileInfoDialog
         )
     }
 
