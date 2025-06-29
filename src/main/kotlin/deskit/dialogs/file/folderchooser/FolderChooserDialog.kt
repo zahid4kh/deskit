@@ -16,31 +16,18 @@ limitations under the License.
 
 package deskit.dialogs.file.folderchooser
 
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowCircleLeft
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 import deskit.dialogs.info.InfoDialog
-import deskit.resources.*
-import deskit.utils.getFileIcon
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import java.awt.Dimension
 import java.io.File
 
@@ -151,181 +138,6 @@ fun FolderChooserDialog(
             title = "Cannot Select Files",
             message = "This dialog only allows selecting folders. Please choose a folder instead.",
             onClose = { showFileNotAllowedDialog = false }
-        )
-    }
-}
-
-@Composable
-private fun FilesAndFoldersListSection(
-    coroutineScope: CoroutineScope,
-    pathScrollState: ScrollState,
-    items: List<File>,
-    onFileClicked: () -> Unit,
-    onFolderSelected: (File) -> Unit,
-    modifier: Modifier = Modifier
-){
-    Box(
-        modifier = modifier
-    ){
-        val listState = rememberLazyListState()
-
-        Box(modifier = Modifier.fillMaxSize()){
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(end = 12.dp)
-            ) {
-                items(items) { item ->
-                    if (item.isDirectory) {
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.medium)
-                                .clickable {
-                                    onFolderSelected(item)
-                                    //currentDir = item
-                                    coroutineScope.launch {
-                                        pathScrollState.animateScrollTo(pathScrollState.maxValue)
-                                    }
-                                }
-                                .padding(9.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.folder),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.tertiary,
-                                modifier = Modifier.size(22.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(item.name, overflow = TextOverflow.Ellipsis)
-                        }
-                    } else {
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.medium)
-                                .clickable {
-                                    onFileClicked()
-                                }
-                                .padding(9.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = getFileIcon(item),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f), // Dimmed to indicate non-selectability
-                                modifier = Modifier.size(22.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                text = item.name,
-                                overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), // Dimmed text
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
-                }
-            }
-
-            VerticalScrollbar(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(listState),
-                style = LocalScrollbarStyle.current.copy(
-                    hoverColor = MaterialTheme.colorScheme.outline,
-                    unhoverColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            )
-        }
-    }
-}
-
-@Composable
-private fun BackButtonSection(
-    coroutineScope: CoroutineScope,
-    pathScrollState: ScrollState,
-    onBackClicked: (File) -> Unit,
-    currentDir: File
-){
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ){
-            if (currentDir.parentFile != null) {
-                IconButton(
-                    onClick = {
-                        currentDir.parentFile?.let { parent ->
-                            //currentDir = parent
-                            onBackClicked(parent)
-
-                            coroutineScope.launch {
-                                pathScrollState.animateScrollTo(pathScrollState.maxValue)
-                            }
-                        }
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowCircleLeft,
-                        contentDescription = "Back"
-                    )
-                }
-            }
-            Spacer(Modifier.width(3.dp))
-            Text("Current Directory", style = MaterialTheme.typography.labelLarge)
-        }
-    }
-}
-
-@Composable
-private fun PathSegmentsSection(
-    pathScrollState: ScrollState,
-    pathSegments: List<File>,
-    onFolderSelected: (File) -> Unit,
-){
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ){
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                .horizontalScroll(pathScrollState)
-                .padding(bottom = 8.dp, end = 12.dp)
-        ) {
-            pathSegments.forEachIndexed { index, dir ->
-                Text(
-                    text = dir.name.ifBlank { "." },
-                    color = if (index == pathSegments.lastIndex)
-                        MaterialTheme.colorScheme.primary else LocalContentColor.current,
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.medium)
-                        .clickable { onFolderSelected(dir) }
-                        .padding(8.dp),
-                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
-                )
-                if (index != pathSegments.lastIndex) {
-                    Text("/", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
-                }
-            }
-        }
-        HorizontalScrollbar(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .padding(end = 12.dp),
-            adapter = rememberScrollbarAdapter(pathScrollState),
-            style = LocalScrollbarStyle.current.copy(
-                hoverColor = MaterialTheme.colorScheme.outline,
-                unhoverColor = MaterialTheme.colorScheme.primaryContainer
-            )
         )
     }
 }
