@@ -42,7 +42,10 @@ import java.io.File
  *
  * @param title The title text displayed in the dialog window's title bar. Defaults to "Save As".
  * @param suggestedFileName The initial filename to populate in the text field. Can be empty.
+ * @param fileIconColor The color applied to file icons. Defaults to primary theme color.
+ * @param folderIconColor The color applied to folder icons. Defaults to tertiary theme color.
  * @param extension The file extension to append to the saved file (e.g., ".txt", ".pdf").
+ * @param resizableFileInfoDialog Whether the file info dialog can be resized. Defaults to `true`.
  * @param onSave Callback function invoked with the selected File when the user clicks Save.
  * @param onCancel Callback function invoked when the user cancels the operation.
  *
