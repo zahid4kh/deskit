@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
-import deskit.dialogs.InfoDialog
+import deskit.dialogs.info.InfoDialog
 import deskit.resources.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

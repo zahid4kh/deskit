@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package deskit.dialogs
+package deskit.dialogs.info
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -53,7 +53,7 @@ import java.awt.Dimension
  * @param content The main content of the dialog. By default, it displays the `message` text.
  *                This can be overridden with any custom Composable content for more complex layouts.
  *
- * @sample deskit.dialogs.InfoDialogSample
+ * @sample deskit.dialogs.info.InfoDialogSample
  */
 @Composable
 fun InfoDialog(
@@ -150,7 +150,7 @@ internal fun Dp.toIntPx(): Int {
  * (e.g., "Info dialog is shown", "Info dialog was closed").
  * This serves as a practical example of how to integrate and manage the
  * [InfoDialog] within a Composable UI.
- * @sample deskit.dialogs.InfoDialogSample
+ * @sample deskit.dialogs.info.InfoDialogSample
  */
 @Composable
 fun InfoDialogSample(){

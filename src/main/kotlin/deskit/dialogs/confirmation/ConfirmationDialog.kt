@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package deskit.dialogs
+package deskit.dialogs.confirmation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.dialogs.info.toIntPx
 import java.awt.Dimension
 
 /**
@@ -57,7 +58,7 @@ import java.awt.Dimension
  * @param content The main content of the dialog. By default, it displays the `message` text.
  *                This can be overridden with any custom Composable content.
  *
- * @sample deskit.dialogs.ConfirmationDialogSample
+ * @sample deskit.dialogs.confirmation.ConfirmationDialogSample
  */
 @Composable
 fun ConfirmationDialog(
@@ -166,7 +167,7 @@ fun ConfirmationDialog(
  * or "Confirmation dialog was closed"). This serves as a practical example of how to
  * integrate and manage the [ConfirmationDialog] and its different dismissal/action
  * callbacks within a Composable UI.
- * @sample deskit.dialogs.ConfirmationDialogSample
+ * @sample deskit.dialogs.confirmation.ConfirmationDialogSample
  */
 @Composable
 fun ConfirmationDialogSample(){

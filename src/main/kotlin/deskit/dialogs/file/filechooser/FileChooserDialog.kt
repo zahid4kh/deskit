@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
-import deskit.dialogs.InfoDialog
+import deskit.dialogs.info.InfoDialog
 import deskit.utils.calculateFolderSize
 import deskit.utils.formatFileSize
 import deskit.utils.getFileIcon
