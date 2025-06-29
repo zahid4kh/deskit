@@ -16,17 +16,14 @@ limitations under the License.
 
 package deskit.dialogs
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -34,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import java.awt.Dimension
 
 /**
  * Displays a modal information dialog with a custom title, message, optional image, and single OK button.
@@ -55,11 +53,13 @@ import androidx.compose.ui.window.rememberDialogState
 fun InfoDialog(
     width: Dp = 450.dp,
     height: Dp = 230.dp,
+    resizable: Boolean = false,
     title: String = "Information",
     message: String = "Information message",
     icon: Painter? = null,
-    colorFilter: ColorFilter? = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+    iconTint: Color = MaterialTheme.colorScheme.primary,
     iconSize: DpSize = DpSize(64.dp, 64.dp),
+    onClose: () -> Unit,
     content: @Composable () -> Unit = {
         Text(
             text = message,
@@ -67,8 +67,7 @@ fun InfoDialog(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-    },
-    onClose: () -> Unit
+    }
 ) {
     val dialogWidth = width
     val dialogHeight = height
@@ -82,8 +81,13 @@ fun InfoDialog(
         title = title,
         state = dialogState,
         onCloseRequest = onClose,
-        resizable = false
+        resizable = resizable
     ) {
+        if(resizable){
+            window.minimumSize = Dimension(dialogWidth.toIntPx(), dialogHeight.toIntPx())
+        }else{
+            window.minimumSize = null
+        }
         Surface(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -94,10 +98,11 @@ fun InfoDialog(
             ) {
                 if (icon != null) {
                     Spacer(Modifier.height(4.dp))
-                    Image(
+
+                    Icon(
                         painter = icon,
                         contentDescription = null,
-                        colorFilter = colorFilter,
+                        tint = iconTint,
                         modifier = Modifier.size(iconSize.width, iconSize.height)
                     )
                     Spacer(Modifier.height(16.dp))
@@ -122,6 +127,13 @@ fun InfoDialog(
             }
         }
     }
+}
+
+
+@Composable
+internal fun Dp.toIntPx(): Int {
+    val density = LocalDensity.current
+    return with(density) { this@toIntPx.toPx().toInt() }
 }
 
 /**
