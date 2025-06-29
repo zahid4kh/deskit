@@ -16,13 +16,12 @@ limitations under the License.
 
 package deskit.dialogs
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -31,27 +30,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import java.awt.Dimension
 
 /**
- * Displays a modal confirmation dialog with Cancel and OK buttons, and an optional icon.
+ * Displays a modal dialog to request user confirmation for an action.
  *
- * This dialog is used when an action requires user confirmation before proceeding.
- * The dialog provides separate callbacks for confirm and cancel actions, allowing
- * different behaviors for each button.
+ * This dialog is used when an action requires explicit user consent before proceeding. It includes
+ * distinct "OK" and "Cancel" buttons, an optional icon, and a customizable content area.
+ * It provides separate callbacks for confirm, cancel, and close actions.
  *
- * @param title The title text displayed in the dialog window's title bar.
- * @param message The confirmation message displayed to the user.
- * @param icon Optional icon/image to display in the dialog to enhance visual appeal.
- * @param iconSize Size of the icon if provided. Defaults to 64.dp.
- * @param colorFilter Color filter to apply to the icon if provided.
- * @param confirmButtonText Text for the confirmation button. Defaults to "OK".
- * @param cancelButtonText Text for the cancel button. Defaults to "Cancel".
- * @param content Optional composable content to replace the standard message. Can be used for
- *                custom layout, rich text, or more complex confirmation displays.
- * @param onConfirm Callback function invoked when the user clicks the confirmation button.
- * @param onCancel Callback function invoked when the user clicks Cancel or the X button.
- * @param onClose Callback function invoked when the dialog is closed via the window's X button.
- *                Defaults to calling onCancel.
+ * @param width The initial width of the dialog window.
+ * @param height The initial height of the dialog window.
+ * @param resizable Whether the user can resize the dialog window. Defaults to `false`.
+ * @param title The text displayed in the dialog window's title bar.
+ * @param message The default confirmation message. This is used by the default `content` lambda.
+ *                If you provide a custom `content` composable, this parameter is ignored.
+ * @param icon An optional `Painter` to be displayed at the top of the dialog.
+ * @param iconSize The size of the `icon`.
+ * @param iconTint The tint color applied to the `icon`. Defaults to the primary theme color.
+ * @param confirmButtonText The text displayed on the confirmation (OK) button.
+ * @param cancelButtonText The text displayed on the cancellation button.
+ * @param onConfirm A callback function that is invoked when the user clicks the confirmation button.
+ * @param onCancel A callback function that is invoked when the user clicks the cancel button.
+ * @param onClose A callback function that is invoked when the user closes the dialog via the
+ *                window's 'X' button. By default, this will also trigger `onCancel`.
+ * @param content The main content of the dialog. By default, it displays the `message` text.
+ *                This can be overridden with any custom Composable content.
  *
  * @sample deskit.dialogs.ConfirmationDialogSample
  */
@@ -59,13 +63,17 @@ import androidx.compose.ui.window.rememberDialogState
 fun ConfirmationDialog(
     width: Dp = 450.dp,
     height: Dp = 230.dp,
+    resizable: Boolean = false,
     title: String = "Confirmation",
     message: String = "Please confirm to proceed",
     icon: Painter? = null,
     iconSize: DpSize = DpSize(64.dp, 64.dp),
-    colorFilter: ColorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+    iconTint: Color = MaterialTheme.colorScheme.primary,
     confirmButtonText: String = "OK",
     cancelButtonText: String = "Cancel",
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+    onClose: () -> Unit = onCancel,
     content: @Composable () -> Unit = {
         Text(
             text = message,
@@ -73,10 +81,7 @@ fun ConfirmationDialog(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-    },
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit,
-    onClose: () -> Unit = onCancel
+    }
 ) {
 //    val dialogWidth = if (icon != null) 500.dp else 450.dp
 //    val dialogHeight = if (icon != null) 280.dp else 230.dp
@@ -93,8 +98,13 @@ fun ConfirmationDialog(
         title = title,
         state = dialogState,
         onCloseRequest = onClose,
-        resizable = false
+        resizable = resizable
     ) {
+        if(resizable){
+            window.minimumSize = Dimension(dialogWidth.toIntPx(), dialogHeight.toIntPx())
+        }else{
+            window.minimumSize = null
+        }
         Surface(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -105,10 +115,10 @@ fun ConfirmationDialog(
             ) {
                 if (icon != null) {
                     Spacer(Modifier.height(4.dp))
-                    Image(
+                    Icon(
                         painter = icon,
                         contentDescription = null,
-                        colorFilter = colorFilter,
+                        tint = iconTint,
                         modifier = Modifier.size(iconSize.width, iconSize.height)
                     )
                     Spacer(Modifier.height(16.dp))
