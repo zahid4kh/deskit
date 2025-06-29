@@ -46,6 +46,9 @@ import java.io.File
  *                       Defaults to the user's Downloads folder.
  * @param onFolderSelected Callback function invoked with the selected File (directory) when
  *                         the user clicks Choose.
+ * @param fileItemColor The color applied to file items. Defaults to dimmed outline color.
+ * @param folderItemColor The color applied to folder items. Defaults to tertiary theme color.
+ * @param isFileInfoDialogResizable Whether the file info dialog can be resized. Defaults to `true`.
  * @param onCancel Callback function invoked when the user cancels the operation.
  *
  * Features:
