@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package deskit.dialogs.file
+package deskit.dialogs.file.filesaver
 
 
 import androidx.compose.animation.*
@@ -67,7 +67,7 @@ import java.io.File
  * - File existence validation
  * - Back button for parent directory navigation
  *
- * @sample deskit.dialogs.file.FileSaverDialogSample
+ * @sample deskit.dialogs.file.filesaver.FileSaverDialogSample
  */
 @Composable
 fun FileSaverDialog(
@@ -563,7 +563,7 @@ private fun getFileIcon(file: File): Painter {
  * [FileSaverDialog], including handling file saving and cancellation events,
  * within a Composable UI.
  *
- * @sample deskit.dialogs.file.FileSaverDialogSample
+ * @sample deskit.dialogs.file.filesaver.FileSaverDialogSample
  */
 @Composable
 fun FileSaverDialogSample(){
