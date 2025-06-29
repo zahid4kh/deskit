@@ -1,20 +1,38 @@
 package deskit.dialogs.file.folderchooser
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import deskit.resources.Res
 import deskit.resources.folder
 import deskit.utils.getFileIcon
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import java.io.File
+
 
 
 @Composable
@@ -24,7 +42,10 @@ internal fun FilesAndFoldersListSection(
     items: List<File>,
     onFileClicked: () -> Unit,
     onFolderSelected: (File) -> Unit,
-    modifier: Modifier = Modifier
+    onShowFileInfo: (File) -> Unit,
+    modifier: Modifier = Modifier,
+    folderIconColor: Color,
+    fileItemColor: Color
 ){
     Box(
         modifier = modifier
@@ -36,10 +57,15 @@ internal fun FilesAndFoldersListSection(
                 state = listState,
                 modifier = Modifier
                     .fillMaxSize()
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f))
                     .padding(end = 12.dp)
             ) {
                 items(items) { item ->
                     if (item.isDirectory) {
+                        val folderInteractionSource = remember { MutableInteractionSource() }
+                        val isFolderHovered by folderInteractionSource.collectIsHoveredAsState()
+
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -51,42 +77,77 @@ internal fun FilesAndFoldersListSection(
                                         pathScrollState.animateScrollTo(pathScrollState.maxValue)
                                     }
                                 }
-                                .padding(9.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(9.dp)
+                                .hoverable(folderInteractionSource),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.folder),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.tertiary,
-                                modifier = Modifier.size(22.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(item.name, overflow = TextOverflow.Ellipsis)
+                            Row(verticalAlignment = Alignment.CenterVertically){
+                                Icon(
+                                    painter = painterResource(Res.drawable.folder),
+                                    contentDescription = null,
+                                    tint = folderIconColor,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(item.name, overflow = TextOverflow.Ellipsis)
+                            }
+                            AnimatedVisibility(
+                                visible = isFolderHovered,
+                                enter = scaleIn(),
+                                exit = scaleOut()
+                            ){
+                                IconButton(onClick = {onShowFileInfo(item)}, modifier = Modifier.size(20.dp)){
+                                    Icon(
+                                        Icons.Default.Info,
+                                        contentDescription = "Folder info",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
                         }
                     } else {
+                        val fileInteractionSource = remember { MutableInteractionSource() }
+                        val isFileHovered by fileInteractionSource.collectIsHoveredAsState()
+
                         Row(
                             Modifier
                                 .fillMaxWidth()
                                 .clip(MaterialTheme.shapes.medium)
-                                .clickable {
-                                    onFileClicked()
-                                }
-                                .padding(9.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .clickable { onFileClicked() }
+                                .padding(9.dp)
+                                .hoverable(fileInteractionSource),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Icon(
-                                painter = getFileIcon(item),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f), // Dimmed to indicate non-selectability
-                                modifier = Modifier.size(22.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                text = item.name,
-                                overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), // Dimmed text
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically){
+                                Icon(
+                                    painter = getFileIcon(item),
+                                    contentDescription = null,
+                                    tint = fileItemColor, // Dimmed to indicate non-selectability
+                                    modifier = Modifier.size(22.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    text = item.name,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = fileItemColor, // Dimmed text
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            AnimatedVisibility(
+                                visible = isFileHovered,
+                                enter = scaleIn(),
+                                exit = scaleOut()
+                            ){
+                                IconButton(onClick = {onShowFileInfo(item)}, modifier = Modifier.size(20.dp)){
+                                    Icon(
+                                        Icons.Default.Info,
+                                        contentDescription = "File info",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }

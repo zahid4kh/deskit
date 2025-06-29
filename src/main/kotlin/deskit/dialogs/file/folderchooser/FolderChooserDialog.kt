@@ -22,12 +22,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 import deskit.dialogs.info.InfoDialog
+import deskit.utils.FileInfoDialog
 import java.awt.Dimension
 import java.io.File
 
@@ -59,11 +61,15 @@ fun FolderChooserDialog(
     title: String = "Choose Folder",
     startDirectory: File = File(System.getProperty("user.home") + "/Downloads"),
     onFolderSelected: (File) -> Unit,
+    fileItemColor: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
+    folderItemColor: Color = MaterialTheme.colorScheme.tertiary,
+    isFileInfoDialogResizable: Boolean = true,
     onCancel: () -> Unit
 ) {
     var currentDir by remember { mutableStateOf(startDirectory) }
     var showFileNotAllowedDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    var selectedFileForInfo by remember { mutableStateOf<File?>(null) }
 
     val items = remember(currentDir) {
         currentDir.listFiles()
@@ -79,6 +85,14 @@ fun FolderChooserDialog(
     val dialogState = rememberDialogState(size = DpSize(600.dp, 600.dp), position = WindowPosition(Alignment.Center))
 
     val pathScrollState = rememberScrollState()
+
+    selectedFileForInfo?.let { file ->
+        FileInfoDialog(
+            file = file,
+            onClose = { selectedFileForInfo = null },
+            resizable = isFileInfoDialogResizable
+        )
+    }
 
     DialogWindow(
         title = title,
@@ -113,7 +127,12 @@ fun FolderChooserDialog(
                     items = items,
                     onFileClicked = { showFileNotAllowedDialog = true },
                     onFolderSelected = { currentDir = it },
-                    modifier = Modifier.weight(1f)
+                    onShowFileInfo = { file ->
+                        selectedFileForInfo = file
+                    },
+                    modifier = Modifier.weight(1f),
+                    folderIconColor = folderItemColor,
+                    fileItemColor = fileItemColor
                 )
 
                 Spacer(Modifier.height(8.dp))
