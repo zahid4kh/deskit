@@ -36,16 +36,22 @@ import java.awt.Dimension
 /**
  * Displays a modal information dialog with a custom title, message, optional image, and single OK button.
  *
- * This dialog is typically used to show non-critical information to the user that only requires
- * acknowledgment. The dialog is centered on screen and has a size that adapts to content.
+ * This dialog is designed to present information that requires user acknowledgment. It features a
+ * title, a customizable content area, an optional icon, and a single "OK" button to close it.
  *
- * @param title The title text displayed in the dialog window's title bar. Defaults to "Information".
- * @param message The main message text displayed in the center of the dialog. Defaults to "Information message".
- * @param icon Optional icon/image to display at the top of the dialog to make it more visually appealing.
- * @param iconSize Size of the icon if provided. Defaults to 64.dp.
- * @param content Optional composable content to replace the standard message. Can be used for
- *                custom layout, rich text, or more complex information displays.
- * @param onClose Callback function invoked when the user clicks OK or closes the dialog.
+ * @param width The initial width of the dialog window.
+ * @param height The initial height of the dialog window.
+ * @param resizable Whether the user can resize the dialog window. Defaults to `false`.
+ * @param title The text displayed in the dialog window's title bar.
+ * @param message The default message text. This is used by the default `content` lambda.
+ *                If you provide a custom `content` composable, this parameter is ignored.
+ * @param icon An optional `Painter` to be displayed at the top of the dialog, above the content.
+ * @param iconTint The tint color applied to the `icon`. Defaults to the primary theme color.
+ * @param iconSize The size of the `icon`.
+ * @param onClose A callback function that is invoked when the user clicks the "OK" button or
+ *                closes the dialog window.
+ * @param content The main content of the dialog. By default, it displays the `message` text.
+ *                This can be overridden with any custom Composable content for more complex layouts.
  *
  * @sample deskit.dialogs.InfoDialogSample
  */
