@@ -2,178 +2,37 @@
 
 [![](https://jitpack.io/v/zahid4kh/deskit.svg)](https://jitpack.io/#zahid4kh/deskit) [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.20-blue.svg?logo=kotlin)](https://kotlinlang.org/docs/releases.html#release-details) [![Compose](https://img.shields.io/badge/Compose-1.7.3-blue.svg?logo=jetpackcompose)](https://github.com/JetBrains/compose-jb)
 
-A library for desktop components designed for *Compose for Desktop* applications using Kotlin.
-
-## Table of Contents
-
-- [What's New in 1.2.0](#whats-new-in-120)
-    - [Demo Video](#demo-video)
-    - [Screenshots](#screenshots)
-- [Features](#features)
-- [Installation](#installation)
-    - [Option 1: build.gradle.kts](#option-1-if-you-manage-repositories-in-buildgradlekts)
-    - [Option 2: settings.gradle.kts](#option-2-if-you-manage-repositories-in-settingsgradlekts)
-- [Quick Start](#quick-start)
-    - [File Chooser Dialog](#file-chooser-dialog)
-    - [File Saver Dialog](#file-saver-dialog)
-    - [Confirmation Dialog](#confirmation-dialog)
-    - [Info Dialog](#info-dialog)
-    - [Folder Chooser Dialog](#folder-chooser-dialog)
-- [Custom Content in Dialogs](#custom-content-in-dialogs)
-- [API Documentation](#api-documentation)
-- [Requirements](#requirements)
-- [License](#license)
-
-## What's New in 1.2.0
-
-- **🖌️ Enhanced Visuals**: Added icon support to InfoDialog and ConfirmationDialog
-- **📊 Scrollbars**: All file dialogs now feature horizontal and vertical scrollbars
-- **🔍 Smart Folder Navigation**: Folders now show matching file counts in FileChooserDialog
-- **🎨 Visual File Types**: Rich file type icons for better user experience
-- **📱 Component-Based Architecture**: More maintainable and consistent UI across all dialogs
-
-### Demo Video
-
-FolderChooserDialog in action:
-
-<video src="https://github.com/user-attachments/assets/9abeeb1c-91d7-43ff-b800-d163214973e0" width="640" controls></video>
-
-### Screenshots
-
-*FileChooserDialog showing file type filtering, breadcrumb navigation with scrollbar, and folder matching counts*
-
-![File Chooser Dialog with File Extension Filtering](screenshots/filechooser3.png)
-
-*InfoDialog with custom icon and styled message*
-```kotlin
-InfoDialog(
-    title = "Debian",
-    icon = painterResource(Res.drawable.debian),
-    content = {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("This is a custom message with")
-            Spacer(Modifier.height(8.dp))
-            Text("multiple components", fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(16.dp))
-            LinearProgressIndicator(modifier = Modifier.width(200.dp))
-        }
-    },
-    onClose = { showInfoDialog = false }
-)
-```
-
-![Information Dialog with Custom Icon](screenshots/infodialog.png)
-
-*FolderChooserDialog displaying both files (dimmed) and folders with scrollbars*
-
-![Folder Chooser Dialog with Files](screenshots/folderchooser1.png)
-
-*FileChooserDialog with badge and tooltip, showing how many files match the required extension*
-
-![File Chooser Dialog with Badge and Tooltip](screenshots/filechooser2.png)
-
-*ConfirmationDialog with warning icon*
-```kotlin
-ConfirmationDialog(
-    title = "Delete Project Files",
-    message = "This will permanently delete all project files. This action cannot be undone.",
-    icon = painterResource(Res.drawable.warning),
-    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.error),
-    confirmButtonText = "Delete",
-    cancelButtonText = "Cancel",
-    onConfirm = { showConfirmationDialog = false },
-    onCancel = { showConfirmationDialog = false }
-)
-```
-![Confirmation Dialog with Warning Icon](screenshots/confirmationdialog1.png)
-
-
----
-
-## Features
-
-- 🗂️ **File System Dialogs**: Choose files, save files, and select folders - now with scrollbars and smart navigation
-- ✅ **Confirmation Dialogs**: User-friendly confirmation prompts with customizable messages and optional icons
-- ℹ️ **Information Dialogs**: Clean information display with single-action acknowledgment and custom icons
-- 🧭 **Breadcrumb Navigation**: Intuitive path navigation with clickable segments and horizontal scrolling
-
----
+[Latest release 1.3.0](https://github.com/zahid4kh/deskit/wiki/1.3.0)
 
 ## Installation
 
-### Option 1: If you manage repositories in `build.gradle.kts`
-
-Your module level `build.gradle.kts` should look similar to this:
+Add Deskit to your Compose for Desktop project:
 
 ```kotlin
-plugins {
-    kotlin("jvm")
-    id("org.jetbrains.compose")
-    id("org.jetbrains.kotlin.plugin.compose")
-}
-
-repositories {
-    maven { url = uri("https://jitpack.io") }
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    mavenCentral()
-    google()
-}
-
-dependencies {
-    implementation(compose.desktop.currentOs)
-    implementation("com.github.zahid4kh:deskit:1.2.1")
-}
-
-kotlin {
-    jvmToolchain(17)
-}
+implementation("com.github.zahid4kh:deskit:1.3.0")
 ```
 
-### Option 2: If you manage repositories in `settings.gradle.kts`
-
-1. Add the JitPack repository to your `settings.gradle.kts` file:
-
-```kotlin
-dependencyResolutionManagement {
-    repositories {
-        maven { url = uri("https://jitpack.io") }
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        mavenCentral()
-        google()
-    }
-}
-```
-
-2. Add the dependency to your `build.gradle.kts` file:
-
-```kotlin
-dependencies {
-    implementation("com.github.zahid4kh:deskit:1.2.1")
-}
-```
-
----
+For detailed setup instructions, see the [Installation Guide](https://github.com/zahid4kh/deskit/wiki/Installation).
 
 ## Quick Start
 
-### File Chooser Dialog
+Get started with a simple file chooser dialog:
 
 ```kotlin
 @Composable
-fun MyApp() {
+fun FileChooserExample() {
     var showFileDialog by remember { mutableStateOf(false) }
     var selectedFile by remember { mutableStateOf<File?>(null) }
 
     Button(onClick = { showFileDialog = true }) {
-        Text("Open File")
+        Text("Choose File")
     }
 
     if (showFileDialog) {
         FileChooserDialog(
-            title = "Select a File",
+            title = "Select a Document",
             allowedExtensions = listOf("txt", "pdf", "md"),
-            folderIconColor = MaterialTheme.colorScheme.tertiary, 
-            fileIconColor = MaterialTheme.colorScheme.primary,
+            resizableFileInfoDialog = true, // New in 1.3.0
             onFileSelected = { file ->
                 selectedFile = file
                 showFileDialog = false
@@ -184,129 +43,31 @@ fun MyApp() {
 }
 ```
 
-### File Saver Dialog
+For complete examples of all dialog types, visit the [Quick Start Guide](https://github.com/zahid4kh/deskit/wiki/Quick-Start).
 
-```kotlin
-@Composable
-fun SaveExample() {
-    var showSaveDialog by remember { mutableStateOf(false) }
+## Custom Content
 
-    Button(onClick = { showSaveDialog = true }) {
-        Text("Save File")
-    }
-
-    if (showSaveDialog) {
-        FileSaverDialog(
-            title = "Save Document",
-            suggestedFileName = "my-document",
-            extension = ".txt",
-            onSave = { file ->
-                file.writeText("Hello, World!")
-                showSaveDialog = false
-            },
-            onCancel = { showSaveDialog = false }
-        )
-    }
-}
-```
-
-### Confirmation Dialog
-
-```kotlin
-@Composable
-fun ConfirmExample() {
-    var showConfirmDialog by remember { mutableStateOf(false) }
-
-    Button(onClick = { showConfirmDialog = true }) {
-        Text("Delete Item")
-    }
-
-    if (showConfirmDialog) {
-        ConfirmationDialog(
-            title = "Confirm Deletion",
-            message = "Are you sure you want to delete this item?",
-            icon = painterResource(Res.drawable.warning),
-            confirmButtonText = "Delete", 
-            cancelButtonText = "Keep",
-            onConfirm = {
-                // Perform deletion
-                showConfirmDialog = false
-            },
-            onCancel = { showConfirmDialog = false }
-        )
-    }
-}
-```
-
-### Info Dialog
-
-```kotlin
-@Composable
-fun InfoExample() {
-    var showInfoDialog by remember { mutableStateOf(false) }
-
-    if (showInfoDialog) {
-        InfoDialog(
-            title = "Success",
-            message = "Your file has been saved successfully!",
-            icon = painterResource(Res.drawable.success), 
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            onClose = { showInfoDialog = false }
-        )
-    }
-}
-```
-
-### Folder Chooser Dialog
-
-```kotlin
-@Composable
-fun FolderExample() {
-    var showFolderDialog by remember { mutableStateOf(false) }
-
-    if (showFolderDialog) {
-        FolderChooserDialog(
-            title = "Select Export Folder",
-            onFolderSelected = { folder ->
-                println("Selected: ${folder.absolutePath}")
-                showFolderDialog = false
-            },
-            onCancel = { showFolderDialog = false }
-        )
-    }
-}
-```
-
----
-
-## Custom Content in Dialogs
-
-New in 1.2.1, you can provide custom content to both InfoDialog and ConfirmationDialog:
+Create rich, interactive dialogs with custom content:
 
 ```kotlin
 InfoDialog(
-    title = "Custom Content",
-    icon = painterResource(Res.drawable.info),
+    title = "Processing Files",
     content = {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("This is a custom message with")
-            Spacer(Modifier.height(8.dp))
-            Text("multiple components", fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(16.dp))
-            LinearProgressIndicator(modifier = Modifier.width(200.dp))
+            Text("Processing your files...")
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Text("75% Complete")
         }
     },
-    onClose = {  }
+    onClose = { }
 )
 ```
 
----
+Learn more about creating custom dialog content in the [Custom Content Guide](https://github.com/zahid4kh/deskit/wiki/Custom-Content-in-Dialogs).
 
 ## API Documentation
 
-For detailed documentation and examples, visit the [Deskit documentation](https://zahid4kh.github.io/deskit/).
-
----
+For complete documentation, visit the [Documentation](https://zahid4kh.github.io/deskit/)
 
 ## Requirements
 
@@ -314,8 +75,14 @@ For detailed documentation and examples, visit the [Deskit documentation](https:
 - Compose Multiplatform 1.7.3+
 - JVM 17+
 
----
+For detailed requirements and compatibility information, see [Requirements](https://github.com/zahid4kh/deskit/wiki/Installation#requirements).
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE.txt) file for details.
+## What's New in 1.3.0
+
+- **📋 File Information System**: Comprehensive metadata display with clipboard integration
+- **🖱️ Hover Info Buttons**: Smart info icons on file/folder hover
+- **🎯 Enhanced User Experience**: Individual hover states and improved feedback
+- **🔧 Technical Improvements**: Better performance and error handling
+
+See the complete [v1.3.0 Release Notes](https://github.com/zahid4kh/deskit/wiki/1.3.0) for detailed changes.
