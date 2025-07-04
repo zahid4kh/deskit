@@ -53,6 +53,12 @@ internal fun FileAndFolderSection(
     allowedExtensions: List<String>?,
     folderIconColor: Color,
     fileIconColor: Color,
+    fileAndFolderListBG: Color = MaterialTheme.colorScheme.tertiaryContainer,
+    folderNameColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    fileNameColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    badgeColor: Color = MaterialTheme.colorScheme.primary,
+    badgeContentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    infoIconTint: Color = MaterialTheme.colorScheme.secondary,
     onDirectorySelected: (File) -> Unit,
     onFileSelected: (File) -> Unit,
     onShowFileInfo: (File) -> Unit,
@@ -68,7 +74,7 @@ internal fun FileAndFolderSection(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f))
+                    .background(fileAndFolderListBG)
                     .padding(end = 12.dp)
             ) {
                 items(files) { file ->
@@ -134,8 +140,12 @@ internal fun FileAndFolderSection(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(file.name, overflow = TextOverflow.Ellipsis,
-                                        style = MaterialTheme.typography.bodyMedium)
+                                    Text(
+                                        text = file.name,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = folderNameColor
+                                    )
 
                                     Row(verticalAlignment = Alignment.CenterVertically){
                                         AnimatedVisibility(
@@ -147,21 +157,22 @@ internal fun FileAndFolderSection(
                                                 Icon(
                                                     Icons.Default.Info,
                                                     contentDescription = "Folder/File info",
-                                                    modifier = Modifier.size(20.dp)
+                                                    modifier = Modifier.size(20.dp),
+                                                    tint = infoIconTint
                                                 )
                                             }
                                         }
                                         if (matchingFilesCount != null && matchingFilesCount > 0) {
                                             Surface(
                                                 shape = RoundedCornerShape(12.dp),
-                                                color = MaterialTheme.colorScheme.primaryContainer,
+                                                color = badgeColor,
                                                 modifier = Modifier.padding(start = 8.dp)
                                             ) {
                                                 Text(
                                                     text = "$matchingFilesCount",
                                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                                     style = MaterialTheme.typography.labelSmall,
-                                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                                    color = badgeContentColor
                                                 )
                                             }
                                         }
@@ -192,8 +203,12 @@ internal fun FileAndFolderSection(
                                     modifier = Modifier.size(22.dp)
                                 )
                                 Spacer(Modifier.width(8.dp))
-                                Text(file.name, overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.bodyMedium)
+                                Text(
+                                    text = file.name,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = fileNameColor
+                                )
                             }
 
                             AnimatedVisibility(

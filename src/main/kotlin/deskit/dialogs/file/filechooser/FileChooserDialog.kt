@@ -71,6 +71,12 @@ fun FileChooserDialog(
     allowedExtensions: List<String>? = null,
     folderIconColor: Color = MaterialTheme.colorScheme.tertiary,
     fileIconColor: Color = MaterialTheme.colorScheme.primary,
+    fileAndFolderListBG: Color = MaterialTheme.colorScheme.tertiaryContainer,
+    folderNameColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    fileNameColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
+    badgeColor: Color = MaterialTheme.colorScheme.primary,
+    badgeContentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    infoIconTint: Color = MaterialTheme.colorScheme.secondary,
     resizableFileInfoDialog: Boolean = true,
     onFileSelected: (File) -> Unit,
     onCancel: () -> Unit
@@ -167,6 +173,12 @@ fun FileChooserDialog(
                     allowedExtensions = allowedExtensions,
                     folderIconColor = folderIconColor,
                     fileIconColor = fileIconColor,
+                    fileAndFolderListBG = fileAndFolderListBG,
+                    fileNameColor = fileNameColor,
+                    folderNameColor = folderNameColor,
+                    badgeColor = badgeColor,
+                    badgeContentColor = badgeContentColor,
+                    infoIconTint = infoIconTint,
                     onDirectorySelected = {
                         currentDir = it
                         coroutineScope.launch {
