@@ -77,6 +77,9 @@ fun FileChooserDialog(
     badgeColor: Color = MaterialTheme.colorScheme.primary,
     badgeContentColor: Color = MaterialTheme.colorScheme.onPrimary,
     infoIconTint: Color = MaterialTheme.colorScheme.secondary,
+    scrollbarHoverColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    scrollbarUnhoverColor: Color = MaterialTheme.colorScheme.inversePrimary,
+    tooltipColor: Color = MaterialTheme.colorScheme.tertiary,
     resizableFileInfoDialog: Boolean = true,
     onFileSelected: (File) -> Unit,
     onCancel: () -> Unit
@@ -179,6 +182,9 @@ fun FileChooserDialog(
                     badgeColor = badgeColor,
                     badgeContentColor = badgeContentColor,
                     infoIconTint = infoIconTint,
+                    scrollbarHoverColor = scrollbarHoverColor,
+                    scrollbarUnhoverColor = scrollbarUnhoverColor,
+                    tooltipColor = tooltipColor,
                     onDirectorySelected = {
                         currentDir = it
                         coroutineScope.launch {

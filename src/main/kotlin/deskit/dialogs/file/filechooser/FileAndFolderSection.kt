@@ -40,9 +40,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import deskit.resources.Res
+import deskit.resources.folder
 import deskit.utils.getFileIcon
 import org.jetbrains.compose.resources.painterResource
-import deskit.resources.*
 import java.io.File
 
 
@@ -59,6 +60,9 @@ internal fun FileAndFolderSection(
     badgeColor: Color = MaterialTheme.colorScheme.primary,
     badgeContentColor: Color = MaterialTheme.colorScheme.onPrimary,
     infoIconTint: Color = MaterialTheme.colorScheme.secondary,
+    scrollbarHoverColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    scrollbarUnhoverColor: Color = MaterialTheme.colorScheme.inversePrimary,
+    tooltipColor: Color = MaterialTheme.colorScheme.tertiary,
     onDirectorySelected: (File) -> Unit,
     onFileSelected: (File) -> Unit,
     onShowFileInfo: (File) -> Unit,
@@ -99,7 +103,7 @@ internal fun FileAndFolderSection(
                             tooltip = {
                                 Surface(
                                     modifier = Modifier,
-                                    color = MaterialTheme.colorScheme.tertiary,
+                                    color = tooltipColor,
                                     shape = MaterialTheme.shapes.medium
                                 ) {
                                     Text(
@@ -234,8 +238,8 @@ internal fun FileAndFolderSection(
                     .fillMaxHeight(),
                 adapter = rememberScrollbarAdapter(listState),
                 style = LocalScrollbarStyle.current.copy(
-                    hoverColor = MaterialTheme.colorScheme.outline,
-                    unhoverColor = MaterialTheme.colorScheme.primaryContainer
+                    hoverColor = scrollbarHoverColor,
+                    unhoverColor = scrollbarUnhoverColor
                 )
             )
         }
