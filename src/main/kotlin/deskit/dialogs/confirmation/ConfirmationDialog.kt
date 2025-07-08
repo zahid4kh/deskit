@@ -51,6 +51,7 @@ import java.awt.Dimension
  *                If you provide a custom `content` composable, this parameter is ignored.
  * @param icon An optional `Painter` to be displayed at the top of the dialog.
  * @param iconSize The size of the `icon`.
+ * @param colors Default colors for Confirmation dialog
  * @param confirmButtonText The text displayed on the confirmation (OK) button.
  * @param cancelButtonText The text displayed on the cancellation button.
  * @param onConfirm A callback function that is invoked when the user clicks the confirmation button.
