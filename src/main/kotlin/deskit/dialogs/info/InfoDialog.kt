@@ -49,6 +49,7 @@ import java.awt.Dimension
  * @param message The default message text. This is used by the default `content` lambda.
  *                If you provide a custom `content` composable, this parameter is ignored.
  * @param icon An optional `Painter` to be displayed at the top of the dialog, above the content.
+ * @param colors Default colors for Info dialog.
  * @param iconSize The size of the `icon`.
  * @param onClose A callback function that is invoked when the user clicks the "OK" button or
  *                closes the dialog window.
