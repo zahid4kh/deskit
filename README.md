@@ -4,16 +4,15 @@
 
 A library for desktop components designed for *Compose for Desktop* applications using Kotlin.
 
-[**Latest release 1.3.0**](https://github.com/zahid4kh/deskit/wiki/1.3.0)
+[**Latest release 1.3.1**](https://github.com/zahid4kh/deskit/wiki/1.3.1)
 
-## What's New in 1.3.0
+## What's New in 1.3.1
 
-- **📋 File Information System**: Comprehensive metadata display with clipboard integration
-- **🖱️ Hover Info Buttons**: Smart info icons on file/folder hover
-- **🎯 Enhanced User Experience**: Individual hover states and improved feedback
-- **🔧 Technical Improvements**: Better performance and error handling
+- **Selective Color Customization**: Only specify the colors you want to change
+- **Material3 Integration**: Automatic theme color defaults
+- **Better Maintainability**: Centralized color management
 
-See the complete [v1.3.0 Release Notes](https://github.com/zahid4kh/deskit/wiki/1.3.0) for detailed changes.
+See the complete [v1.3.1 Release Notes](https://github.com/zahid4kh/deskit/wiki/1.3.1) for detailed changes.
 
 ### Demo Video
 
@@ -50,7 +49,7 @@ FolderChooserDialog in action:
 Add Deskit to your Compose for Desktop project:
 
 ```kotlin
-implementation("com.github.zahid4kh:deskit:1.3.0")
+implementation("com.github.zahid4kh:deskit:1.3.1")
 ```
 
 For detailed setup instructions, see the [Installation Guide](https://github.com/zahid4kh/deskit/wiki/Installation).
@@ -75,7 +74,8 @@ fun FileChooserExample() {
         FileChooserDialog(
             title = "Select a Document",
             allowedExtensions = listOf("txt", "pdf", "md"),
-            resizableFileInfoDialog = true, // New in 1.3.0
+            resizableFileInfoDialog = true,
+            colors = FileChooserDefaults.colors(), // New in 1.3.1
             onFileSelected = { file ->
                 selectedFile = file
                 showFileDialog = false
@@ -129,7 +129,7 @@ For complete documentation, visit the [Deskit Wiki](https://github.com/zahid4kh/
 
 ---
 
-## Requirements
+## Requirements for building from source
 
 - **Kotlin**: 2.1.20+
 - **Compose Multiplatform**: 1.7.3+

@@ -46,7 +46,7 @@
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
-1.3.0        </div>
+1.3.1        </div>
         <div class="navigation-controls">
         <div class="filter-section filter-section_loading" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active=""
@@ -109,62 +109,7 @@
   <div class="cover ">
     <h1 class="cover"><span>File</span><wbr></wbr><span>Chooser</span><wbr></wbr><span>Dialog</span><wbr></wbr><span><span>Sample</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":dokkaHtml/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="androidx.compose.runtime/Composable///PointingToDeclaration/"><span class="token annotation builtin">Composable</span></span></div></div><span class="token keyword">fun </span><a href="-file-chooser-dialog-sample.html"><span class="token function">FileChooserDialogSample</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><p class="paragraph">A sample composable function demonstrating the usage of the <a href="-file-chooser-dialog.html">FileChooserDialog</a>.</p><p class="paragraph">This sample displays a button that, when clicked, shows a <a href="-file-chooser-dialog.html">FileChooserDialog</a>. The dialog is pre-configured with a title (&quot;Open File&quot;) and a list of allowed file extensions (e.g., &quot;txt&quot;, &quot;md&quot;, &quot;png&quot;).</p><p class="paragraph">It also features a simple text that updates to reflect the state of the dialog:</p><ul><li><p class="paragraph">&quot;File chooser dialog is shown&quot; when the dialog is opened.</p></li><li><p class="paragraph">&quot;Selected file: path_to_file&quot; when a file is successfully selected.</p></li><li><p class="paragraph">&quot;File chooser dialog was closed&quot; when the dialog is cancelled.</p></li></ul><p class="paragraph">This serves as a practical example of how to integrate and manage the <a href="-file-chooser-dialog.html">FileChooserDialog</a>, including handling file selection and cancellation events, within a Composable UI.</p><h4 class="">Samples</h4><div class="sample-container"><pre><code class="runnablesample monospace block lang-kotlin" theme="idea">import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowCircleLeft
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogWindow
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.rememberDialogState
-import deskit.utils.FileInfoDialog
-import kotlinx.coroutines.launch
-import java.awt.Dimension
-import java.io.File
-
-fun main() { 
-   //sampleStart 
-   var showFileChooserDialog by remember { mutableStateOf(false) }
-var text by remember { mutableStateOf(&quot;&quot;) }
-
-Column(
-    modifier = Modifier.fillMaxSize(),
-    verticalArrangement = Arrangement.spacedBy(16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally
-){
-    Button(
-        onClick = {
-            showFileChooserDialog = true
-            text = &quot;File chooser dialog is shown&quot;
-        }
-    ) {
-        Text(&quot;Show File chooser Dialog&quot;)
-    }
-
-    Text(text)
-}
-
-
-if(showFileChooserDialog){
-    FileChooserDialog(
-        title = &quot;Open File&quot;,
-        allowedExtensions = listOf(&quot;txt&quot;, &quot;md&quot;, &quot;json&quot;, &quot;kt&quot;, &quot;py&quot;, &quot;js&quot;, &quot;html&quot;, &quot;css&quot;, &quot;png&quot;, &quot;jpg&quot;),
-        onFileSelected = {
-            showFileChooserDialog = false
-            text = &quot;Selected file: ${it.absolutePath}&quot;
-        },
-        onCancel = { showFileChooserDialog = false; text = &quot;File chooser dialog was closed&quot; }
-    )
-} 
-   //sampleEnd
-}</code></pre></div></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":dokkaHtml/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="androidx.compose.runtime/Composable///PointingToDeclaration/"><span class="token annotation builtin">Composable</span></span></div></div><span class="token keyword">fun </span><a href="-file-chooser-dialog-sample.html"><span class="token function">FileChooserDialogSample</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><p class="paragraph">A sample composable function demonstrating the usage of the <a href="-file-chooser-dialog.html">FileChooserDialog</a>.</p><p class="paragraph">This sample displays a button that, when clicked, shows a <a href="-file-chooser-dialog.html">FileChooserDialog</a>. The dialog is pre-configured with a title (&quot;Open File&quot;) and a list of allowed file extensions (e.g., &quot;txt&quot;, &quot;md&quot;, &quot;png&quot;).</p><p class="paragraph">It also features a simple text that updates to reflect the state of the dialog:</p><ul><li><p class="paragraph">&quot;File chooser dialog is shown&quot; when the dialog is opened.</p></li><li><p class="paragraph">&quot;Selected file: path_to_file&quot; when a file is successfully selected.</p></li><li><p class="paragraph">&quot;File chooser dialog was closed&quot; when the dialog is cancelled.</p></li></ul><p class="paragraph">This serves as a practical example of how to integrate and manage the <a href="-file-chooser-dialog.html">FileChooserDialog</a>, including handling file selection and cancellation events, within a Composable UI.</p></div></div>
 </div>
     <div class="footer">
         <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
