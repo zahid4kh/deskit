@@ -4,6 +4,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Represents the color scheme for FileChooserDialog components.
+ *
+ * @param folderIconColor Color applied to folder icons
+ * @param fileIconColor Color applied to file icons
+ * @param fileAndFolderListBG Background color of the file/folder list area
+ * @param folderNameColor Text color for folder names
+ * @param fileNameColor Text color for file names
+ * @param badgeColor Background color for file count badges
+ * @param badgeContentColor Text color for badge content
+ * @param infoIconTint Color for info icons that appear on hover
+ * @param scrollbarHoverColor Scrollbar color when hovered
+ * @param scrollbarUnhoverColor Scrollbar color when not hovered
+ * @param tooltipColor Background color for tooltips
+ */
 data class FileChooserColors(
     val folderIconColor: Color,
     val fileIconColor: Color,
@@ -18,7 +33,14 @@ data class FileChooserColors(
     val tooltipColor: Color
 )
 
+/**
+ * Contains default values for FileChooserDialog colors.
+ */
 object FileChooserDefaults{
+    /**
+     * Creates a [FileChooserColors] instance with the provided color values.
+     * Any unspecified colors will use the default Material3 theme colors.
+     */
     @Composable
     fun colors(
         folderIconColor: Color = MaterialTheme.colorScheme.primary,
