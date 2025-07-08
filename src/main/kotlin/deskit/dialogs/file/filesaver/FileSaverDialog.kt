@@ -21,12 +21,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.dialogs.defaults.FileSaverColors
+import deskit.dialogs.defaults.FileSaverDefaults
 import deskit.dialogs.info.InfoDialog
 import deskit.utils.FileInfoDialog
 import kotlinx.coroutines.launch
@@ -42,8 +45,6 @@ import java.io.File
  *
  * @param title The title text displayed in the dialog window's title bar. Defaults to "Save As".
  * @param suggestedFileName The initial filename to populate in the text field. Can be empty.
- * @param fileIconColor The color applied to file icons. Defaults to primary theme color.
- * @param folderIconColor The color applied to folder icons. Defaults to tertiary theme color.
  * @param extension The file extension to append to the saved file (e.g., ".txt", ".pdf").
  * @param resizableFileInfoDialog Whether the file info dialog can be resized. Defaults to `true`.
  * @param onSave Callback function invoked with the selected File when the user clicks Save.
@@ -61,18 +62,18 @@ import java.io.File
 @Composable
 fun FileSaverDialog(
     title: String = "Save As",
+    startDirectory: File = File(System.getProperty("user.home") + "/Downloads"),
     suggestedFileName: String = "",
-    fileIconColor: Color = MaterialTheme.colorScheme.primary,
-    folderIconColor: Color = MaterialTheme.colorScheme.tertiary,
+    colors: FileSaverColors = FileSaverDefaults.colors(),
     extension: String,
     resizableFileInfoDialog: Boolean = true,
     onSave: (File) -> Unit,
     onCancel: () -> Unit
 ) {
-    val homeDir = remember { System.getProperty("user.home") }
+    //val homeDir = remember { System.getProperty("user.home") }
     var fileName by remember { mutableStateOf(suggestedFileName) }
     var showFileExistsDialog by remember { mutableStateOf(false) }
-    var currentDir by remember { mutableStateOf(File("$homeDir/Downloads")) }
+    var currentDir by remember { mutableStateOf(startDirectory) }
     val coroutineScope = rememberCoroutineScope()
     var selectedFileForInfo by remember { mutableStateOf<File?>(null) }
 
@@ -184,8 +185,7 @@ fun FileSaverDialog(
                     onShowFileInfo = {file ->
                         selectedFileForInfo = file
                     },
-                    folderIconColor = folderIconColor,
-                    fileIconColor = fileIconColor,
+                    colors = colors,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -193,9 +193,12 @@ fun FileSaverDialog(
 
                 // Action buttons
                 Row(Modifier.align(Alignment.End)) {
-                    TextButton(onClick = onCancel) {
-                        Text("Cancel", color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium)
+                    TextButton(onClick = onCancel, modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)) {
+                        Text(
+                            text = "Cancel",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                     Spacer(Modifier.width(8.dp))
                     Button(
@@ -213,7 +216,8 @@ fun FileSaverDialog(
                             }
                         },
                         enabled = fileName.isNotBlank(),
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
                     ) {
                         Text("Save", style = MaterialTheme.typography.bodyMedium)
                     }
@@ -254,8 +258,6 @@ fun FileSaverDialog(
  * This serves as a practical example of how to integrate and manage the
  * [FileSaverDialog], including handling file saving and cancellation events,
  * within a Composable UI.
- *
- * @sample deskit.dialogs.file.filesaver.FileSaverDialogSample
  */
 @Composable
 fun FileSaverDialogSample(){

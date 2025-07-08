@@ -21,8 +21,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -31,10 +32,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.dialogs.defaults.InfoDialogColors
+import deskit.dialogs.defaults.InfoDialogDefaults
 import java.awt.Dimension
 
 /**
- * Displays a modal information dialog with a custom title, message, optional image, and single OK button.
+ * Displays a modal information dialog.
  *
  * This dialog is designed to present information that requires user acknowledgment. It features a
  * title, a customizable content area, an optional icon, and a single "OK" button to close it.
@@ -46,14 +49,13 @@ import java.awt.Dimension
  * @param message The default message text. This is used by the default `content` lambda.
  *                If you provide a custom `content` composable, this parameter is ignored.
  * @param icon An optional `Painter` to be displayed at the top of the dialog, above the content.
- * @param iconTint The tint color applied to the `icon`. Defaults to the primary theme color.
  * @param iconSize The size of the `icon`.
  * @param onClose A callback function that is invoked when the user clicks the "OK" button or
  *                closes the dialog window.
  * @param content The main content of the dialog. By default, it displays the `message` text.
  *                This can be overridden with any custom Composable content for more complex layouts.
  *
- * @sample deskit.dialogs.info.InfoDialogSample
+ * @sample InfoDialogSample
  */
 @Composable
 fun InfoDialog(
@@ -63,7 +65,7 @@ fun InfoDialog(
     title: String = "Information",
     message: String = "Information message",
     icon: Painter? = null,
-    iconTint: Color = MaterialTheme.colorScheme.primary,
+    colors: InfoDialogColors = InfoDialogDefaults.colors(),
     iconSize: DpSize = DpSize(64.dp, 64.dp),
     onClose: () -> Unit,
     content: @Composable () -> Unit = {
@@ -83,11 +85,13 @@ fun InfoDialog(
         position = WindowPosition(Alignment.Center)
     )
 
+
     DialogWindow(
         title = title,
         state = dialogState,
         onCloseRequest = onClose,
-        resizable = resizable
+        resizable = resizable,
+        alwaysOnTop = true
     ) {
         if(resizable){
             window.minimumSize = Dimension(dialogWidth.toIntPx(), dialogHeight.toIntPx())
@@ -108,7 +112,7 @@ fun InfoDialog(
                     Icon(
                         painter = icon,
                         contentDescription = null,
-                        tint = iconTint,
+                        tint = colors.iconTint,
                         modifier = Modifier.size(iconSize.width, iconSize.height)
                     )
                     Spacer(Modifier.height(16.dp))
@@ -125,10 +129,11 @@ fun InfoDialog(
 
                 Button(
                     onClick = onClose,
-                    modifier = Modifier.align(Alignment.End),
-                    shape = MaterialTheme.shapes.medium
+                    modifier = Modifier.align(Alignment.End).pointerHoverIcon(PointerIcon.Hand),
+                    shape = MaterialTheme.shapes.medium,
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.okButtonColor)
                 ) {
-                    Text("OK")
+                    Text("OK", color = colors.okButtonTextColor)
                 }
             }
         }
@@ -150,7 +155,6 @@ internal fun Dp.toIntPx(): Int {
  * (e.g., "Info dialog is shown", "Info dialog was closed").
  * This serves as a practical example of how to integrate and manage the
  * [InfoDialog] within a Composable UI.
- * @sample deskit.dialogs.info.InfoDialogSample
  */
 @Composable
 fun InfoDialogSample(){

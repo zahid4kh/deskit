@@ -21,8 +21,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.dialogs.defaults.ConfirmationDialogColors
+import deskit.dialogs.defaults.ConfirmationDialogDefaults
 import deskit.dialogs.info.toIntPx
 import java.awt.Dimension
 
@@ -48,7 +51,6 @@ import java.awt.Dimension
  *                If you provide a custom `content` composable, this parameter is ignored.
  * @param icon An optional `Painter` to be displayed at the top of the dialog.
  * @param iconSize The size of the `icon`.
- * @param iconTint The tint color applied to the `icon`. Defaults to the primary theme color.
  * @param confirmButtonText The text displayed on the confirmation (OK) button.
  * @param cancelButtonText The text displayed on the cancellation button.
  * @param onConfirm A callback function that is invoked when the user clicks the confirmation button.
@@ -69,7 +71,7 @@ fun ConfirmationDialog(
     message: String = "Please confirm to proceed",
     icon: Painter? = null,
     iconSize: DpSize = DpSize(64.dp, 64.dp),
-    iconTint: Color = MaterialTheme.colorScheme.primary,
+    colors: ConfirmationDialogColors = ConfirmationDialogDefaults.colors(),
     confirmButtonText: String = "OK",
     cancelButtonText: String = "Cancel",
     onConfirm: () -> Unit,
@@ -99,7 +101,8 @@ fun ConfirmationDialog(
         title = title,
         state = dialogState,
         onCloseRequest = onClose,
-        resizable = resizable
+        resizable = resizable,
+        alwaysOnTop = true
     ) {
         if(resizable){
             window.minimumSize = Dimension(dialogWidth.toIntPx(), dialogHeight.toIntPx())
@@ -119,7 +122,7 @@ fun ConfirmationDialog(
                     Icon(
                         painter = icon,
                         contentDescription = null,
-                        tint = iconTint,
+                        tint = colors.iconTint,
                         modifier = Modifier.size(iconSize.width, iconSize.height)
                     )
                     Spacer(Modifier.height(16.dp))
@@ -140,15 +143,23 @@ fun ConfirmationDialog(
                 ) {
                     TextButton(
                         onClick = onCancel,
+                        shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.error
-                        )
+                            containerColor = colors.cancelButtonColor,
+                            contentColor = colors.cancelButtonTextColor
+                        ),
+                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
                     ) {
                         Text(cancelButtonText)
                     }
                     Button(
                         onClick = onConfirm,
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colors.confirmButtonColor,
+                            contentColor = colors.confirmButtonTextColor
+                        ),
+                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
                     ) {
                         Text(confirmButtonText)
                     }
@@ -167,7 +178,6 @@ fun ConfirmationDialog(
  * or "Confirmation dialog was closed"). This serves as a practical example of how to
  * integrate and manage the [ConfirmationDialog] and its different dismissal/action
  * callbacks within a Composable UI.
- * @sample deskit.dialogs.confirmation.ConfirmationDialogSample
  */
 @Composable
 fun ConfirmationDialogSample(){

@@ -50,28 +50,6 @@ internal fun calculateFolderSize(folder: File): Long {
     return size
 }
 
-
-/**
- * Determines the appropriate Material icon for a given file based on its type and extension.
- *
- * This function analyzes the file extension to return a contextually appropriate icon from
- * the Material Icons Extended library. Directories receive a special folder icon with primary
- * color tinting.
- *
- * @param file The File object to analyze for icon selection.
- * @return ImageVector representing the most appropriate icon for the file type.
- *
- * Supported file types:
- * - **Images**: PNG, JPG, GIF, BMP, WebP, SVG
- * - **Documents**: PDF, Word, Excel, PowerPoint, TXT, Markdown
- * - **Code**: Kotlin, Java, JavaScript, Python, HTML, CSS, JSON, etc.
- * - **Archives**: ZIP, RAR, 7Z, TAR, GZ
- * - **Media**: Audio (MP3, WAV, FLAC) and Video (MP4, AVI, MKV)
- * - **Fonts**: TTF, OTF, WOFF
- * - **Executables**: EXE, APP, DEB, RPM
- *
- * Files without recognized extensions receive a generic file icon.
- */
 @Composable
 internal fun getFileIcon(file: File): Painter {
     if (file.isDirectory) return painterResource(Res.drawable.folder)
@@ -238,7 +216,8 @@ internal fun FileInfoDialog(
             VerticalScrollbar(
                 modifier = Modifier
                     .fillMaxHeight(0.7f)
-                    .align(Alignment.BottomEnd),
+                    .align(Alignment.BottomEnd)
+                    .pointerHoverIcon(PointerIcon.Hand),
                 adapter = rememberScrollbarAdapter(scrollState),
                 style = LocalScrollbarStyle.current.copy(
                     hoverColor = MaterialTheme.colorScheme.outline,

@@ -22,12 +22,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.dialogs.defaults.FolderChooserColors
+import deskit.dialogs.defaults.FolderChooserDefaults
 import deskit.dialogs.info.InfoDialog
 import deskit.utils.FileInfoDialog
 import java.awt.Dimension
@@ -46,8 +49,6 @@ import java.io.File
  *                       Defaults to the user's Downloads folder.
  * @param onFolderSelected Callback function invoked with the selected File (directory) when
  *                         the user clicks Choose.
- * @param fileItemColor The color applied to file items. Defaults to dimmed outline color.
- * @param folderItemColor The color applied to folder items. Defaults to tertiary theme color.
  * @param isFileInfoDialogResizable Whether the file info dialog can be resized. Defaults to `true`.
  * @param onCancel Callback function invoked when the user cancels the operation.
  *
@@ -64,9 +65,8 @@ fun FolderChooserDialog(
     title: String = "Choose Folder",
     startDirectory: File = File(System.getProperty("user.home") + "/Downloads"),
     onFolderSelected: (File) -> Unit,
-    fileItemColor: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
-    folderItemColor: Color = MaterialTheme.colorScheme.tertiary,
     isFileInfoDialogResizable: Boolean = true,
+    colors: FolderChooserColors = FolderChooserDefaults.colors(),
     onCancel: () -> Unit
 ) {
     var currentDir by remember { mutableStateOf(startDirectory) }
@@ -134,20 +134,20 @@ fun FolderChooserDialog(
                         selectedFileForInfo = file
                     },
                     modifier = Modifier.weight(1f),
-                    folderIconColor = folderItemColor,
-                    fileItemColor = fileItemColor
+                    colors = colors,
                 )
 
                 Spacer(Modifier.height(8.dp))
 
                 Row(Modifier.align(Alignment.End)) {
-                    TextButton(onClick = onCancel) {
+                    TextButton(onClick = onCancel, modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)) {
                         Text("Cancel", color = MaterialTheme.colorScheme.error)
                     }
                     Spacer(Modifier.width(8.dp))
                     Button(
                         onClick = { onFolderSelected(currentDir) },
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
                     ) {
                         Text("Choose")
                     }
@@ -179,8 +179,6 @@ fun FolderChooserDialog(
  * This serves as a practical example of how to integrate and manage the
  * [FolderChooserDialog], including handling folder selection and cancellation events,
  * within a Composable UI.
- *
- * @sample deskit.dialogs.file.folderchooser.FolderChooserDialogSample
  */
 @Composable
 fun FolderChooserDialogSample(){

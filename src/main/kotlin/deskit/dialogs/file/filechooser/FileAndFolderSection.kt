@@ -36,14 +36,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import deskit.resources.Res
-import deskit.resources.folder
+import deskit.dialogs.defaults.FileChooserColors
+import deskit.dialogs.defaults.FileChooserDefaults
 import deskit.utils.getFileIcon
 import org.jetbrains.compose.resources.painterResource
+import deskit.resources.*
 import java.io.File
 
 
@@ -52,17 +54,7 @@ import java.io.File
 internal fun FileAndFolderSection(
     files: List<File>,
     allowedExtensions: List<String>?,
-    folderIconColor: Color,
-    fileIconColor: Color,
-    fileAndFolderListBG: Color = MaterialTheme.colorScheme.tertiaryContainer,
-    folderNameColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
-    fileNameColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
-    badgeColor: Color = MaterialTheme.colorScheme.primary,
-    badgeContentColor: Color = MaterialTheme.colorScheme.onPrimary,
-    infoIconTint: Color = MaterialTheme.colorScheme.secondary,
-    scrollbarHoverColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
-    scrollbarUnhoverColor: Color = MaterialTheme.colorScheme.inversePrimary,
-    tooltipColor: Color = MaterialTheme.colorScheme.tertiary,
+    colors: FileChooserColors = FileChooserDefaults.colors(),
     onDirectorySelected: (File) -> Unit,
     onFileSelected: (File) -> Unit,
     onShowFileInfo: (File) -> Unit,
@@ -78,7 +70,7 @@ internal fun FileAndFolderSection(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(MaterialTheme.shapes.medium)
-                    .background(fileAndFolderListBG)
+                    .background(colors.fileAndFolderListBG)
                     .padding(end = 12.dp)
             ) {
                 items(files) { file ->
@@ -103,7 +95,7 @@ internal fun FileAndFolderSection(
                             tooltip = {
                                 Surface(
                                     modifier = Modifier,
-                                    color = tooltipColor,
+                                    color = colors.tooltipColor,
                                     shape = MaterialTheme.shapes.medium
                                 ) {
                                     Text(
@@ -134,7 +126,7 @@ internal fun FileAndFolderSection(
                                 Icon(
                                     painter = painterResource(Res.drawable.folder),
                                     contentDescription = null,
-                                    tint = folderIconColor,
+                                    tint = colors.folderIconColor,
                                     modifier = Modifier.size(22.dp)
                                 )
                                 Spacer(Modifier.width(8.dp))
@@ -148,7 +140,7 @@ internal fun FileAndFolderSection(
                                         text = file.name,
                                         overflow = TextOverflow.Ellipsis,
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = folderNameColor
+                                        color = colors.folderNameColor
                                     )
 
                                     Row(verticalAlignment = Alignment.CenterVertically){
@@ -162,21 +154,21 @@ internal fun FileAndFolderSection(
                                                     Icons.Default.Info,
                                                     contentDescription = "Folder/File info",
                                                     modifier = Modifier.size(20.dp),
-                                                    tint = infoIconTint
+                                                    tint = colors.infoIconTint
                                                 )
                                             }
                                         }
                                         if (matchingFilesCount != null && matchingFilesCount > 0) {
                                             Surface(
                                                 shape = RoundedCornerShape(12.dp),
-                                                color = badgeColor,
+                                                color = colors.badgeColor,
                                                 modifier = Modifier.padding(start = 8.dp)
                                             ) {
                                                 Text(
                                                     text = "$matchingFilesCount",
                                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                                     style = MaterialTheme.typography.labelSmall,
-                                                    color = badgeContentColor
+                                                    color = colors.badgeContentColor
                                                 )
                                             }
                                         }
@@ -203,7 +195,7 @@ internal fun FileAndFolderSection(
                                 Icon(
                                     painter = getFileIcon(file),
                                     contentDescription = null,
-                                    tint = fileIconColor,
+                                    tint = colors.fileIconColor,
                                     modifier = Modifier.size(22.dp)
                                 )
                                 Spacer(Modifier.width(8.dp))
@@ -211,7 +203,7 @@ internal fun FileAndFolderSection(
                                     text = file.name,
                                     overflow = TextOverflow.Ellipsis,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = fileNameColor
+                                    color = colors.fileNameColor
                                 )
                             }
 
@@ -235,11 +227,12 @@ internal fun FileAndFolderSection(
             VerticalScrollbar(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
+                    .fillMaxHeight()
+                    .pointerHoverIcon(PointerIcon.Hand),
                 adapter = rememberScrollbarAdapter(listState),
                 style = LocalScrollbarStyle.current.copy(
-                    hoverColor = scrollbarHoverColor,
-                    unhoverColor = scrollbarUnhoverColor
+                    hoverColor = colors.scrollbarHoverColor,
+                    unhoverColor = colors.scrollbarUnhoverColor
                 )
             )
         }

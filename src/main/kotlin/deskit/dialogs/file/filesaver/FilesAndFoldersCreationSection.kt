@@ -22,9 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import deskit.dialogs.defaults.FileSaverColors
 import deskit.utils.getFileIcon
 import org.jetbrains.compose.resources.painterResource
 import deskit.resources.*
@@ -34,10 +34,9 @@ import java.io.File
 @Composable
 internal fun FilesAndFoldersListSection(
     items: List<File>,
-    fileIconColor: Color,
-    folderIconColor: Color,
     onFolderClicked: (File) -> Unit,
     onShowFileInfo: (File) -> Unit,
+    colors: FileSaverColors,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -49,7 +48,7 @@ internal fun FilesAndFoldersListSection(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f))
+                    .background(colors.fileAndFolderListBG)
                     .padding(end = 12.dp)
             ) {
                 items(items) { item ->
@@ -71,14 +70,15 @@ internal fun FilesAndFoldersListSection(
                                 Icon(
                                     painter = painterResource(Res.drawable.folder),
                                     contentDescription = null,
-                                    tint = folderIconColor,
+                                    tint = colors.folderIconColor,
                                     modifier = Modifier.size(22.dp)
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(
                                     text = item.name,
                                     overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = colors.folderNameColor
                                 )
                             }
                             AnimatedVisibility(
@@ -90,7 +90,8 @@ internal fun FilesAndFoldersListSection(
                                     Icon(
                                         Icons.Default.Info,
                                         contentDescription = "Folder info",
-                                        modifier = Modifier.size(20.dp)
+                                        modifier = Modifier.size(20.dp),
+                                        tint = colors.infoIconTint
                                     )
                                 }
                             }
@@ -111,14 +112,14 @@ internal fun FilesAndFoldersListSection(
                                 Icon(
                                     painter = getFileIcon(item),
                                     contentDescription = null,
-                                    tint = fileIconColor,
+                                    tint = colors.fileIconColor,
                                     modifier = Modifier.size(22.dp)
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(
                                     text = item.name,
                                     overflow = TextOverflow.Ellipsis,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                    color = colors.fileNameColor,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
@@ -131,7 +132,8 @@ internal fun FilesAndFoldersListSection(
                                     Icon(
                                         Icons.Default.Info,
                                         contentDescription = "File info",
-                                        modifier = Modifier.size(20.dp)
+                                        modifier = Modifier.size(20.dp),
+                                        tint = colors.infoIconTint
                                     )
                                 }
                             }
@@ -146,8 +148,8 @@ internal fun FilesAndFoldersListSection(
                     .fillMaxHeight(),
                 adapter = rememberScrollbarAdapter(listState),
                 style = LocalScrollbarStyle.current.copy(
-                    hoverColor = MaterialTheme.colorScheme.outline,
-                    unhoverColor = MaterialTheme.colorScheme.primaryContainer
+                    hoverColor = colors.scrollbarHoverColor,
+                    unhoverColor = colors.scrollbarUnhoverColor
                 )
             )
         }

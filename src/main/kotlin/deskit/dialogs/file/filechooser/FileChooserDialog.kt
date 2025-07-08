@@ -26,12 +26,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
+import deskit.dialogs.defaults.FileChooserColors
+import deskit.dialogs.defaults.FileChooserDefaults
 import deskit.utils.FileInfoDialog
 import kotlinx.coroutines.launch
 import java.awt.Dimension
@@ -49,8 +52,6 @@ import java.io.File
  *                       Defaults to the user's Downloads folder.
  * @param allowedExtensions Optional list of file extensions to filter by (e.g., ["txt", "pdf"]).
  *                          If null, all files are shown. Extensions are case-insensitive.
- * @param folderIconColor The color applied to folder icons. Defaults to tertiary theme color.
- * @param fileIconColor The color applied to file icons. Defaults to primary theme color.
  * @param onFileSelected Callback function invoked with the selected File when the user clicks a file.
  * @param onCancel Callback function invoked when the user cancels the operation.
  *
@@ -69,17 +70,7 @@ fun FileChooserDialog(
     title: String = "Choose File",
     startDirectory: File = File(System.getProperty("user.home") + "/Downloads"),
     allowedExtensions: List<String>? = null,
-    folderIconColor: Color = MaterialTheme.colorScheme.tertiary,
-    fileIconColor: Color = MaterialTheme.colorScheme.primary,
-    fileAndFolderListBG: Color = MaterialTheme.colorScheme.tertiaryContainer,
-    folderNameColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
-    fileNameColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
-    badgeColor: Color = MaterialTheme.colorScheme.primary,
-    badgeContentColor: Color = MaterialTheme.colorScheme.onPrimary,
-    infoIconTint: Color = MaterialTheme.colorScheme.secondary,
-    scrollbarHoverColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
-    scrollbarUnhoverColor: Color = MaterialTheme.colorScheme.inversePrimary,
-    tooltipColor: Color = MaterialTheme.colorScheme.tertiary,
+    colors: FileChooserColors = FileChooserDefaults.colors(),
     resizableFileInfoDialog: Boolean = true,
     onFileSelected: (File) -> Unit,
     onCancel: () -> Unit
@@ -174,17 +165,6 @@ fun FileChooserDialog(
                 FileAndFolderSection(
                     files = files,
                     allowedExtensions = allowedExtensions,
-                    folderIconColor = folderIconColor,
-                    fileIconColor = fileIconColor,
-                    fileAndFolderListBG = fileAndFolderListBG,
-                    fileNameColor = fileNameColor,
-                    folderNameColor = folderNameColor,
-                    badgeColor = badgeColor,
-                    badgeContentColor = badgeContentColor,
-                    infoIconTint = infoIconTint,
-                    scrollbarHoverColor = scrollbarHoverColor,
-                    scrollbarUnhoverColor = scrollbarUnhoverColor,
-                    tooltipColor = tooltipColor,
                     onDirectorySelected = {
                         currentDir = it
                         coroutineScope.launch {
@@ -194,6 +174,7 @@ fun FileChooserDialog(
                     onShowFileInfo = { file ->
                         selectedFileForInfo = file
                     },
+                    colors = colors,
                     onFileSelected = onFileSelected,
                     modifier = Modifier.weight(1f)
                 )
@@ -202,7 +183,7 @@ fun FileChooserDialog(
                 Spacer(Modifier.height(8.dp))
 
                 Row(Modifier.align(Alignment.End)) {
-                    TextButton(onClick = onCancel) {
+                    TextButton(onClick = onCancel, modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)) {
                         Text("Cancel", color = MaterialTheme.colorScheme.error)
                     }
                     Spacer(Modifier.width(8.dp))
@@ -214,7 +195,8 @@ fun FileChooserDialog(
                             }
                         },
                         enabled = files.any { !it.isDirectory },
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
                     ) {
                         Text("Select")
                     }
@@ -240,8 +222,6 @@ fun FileChooserDialog(
  * This serves as a practical example of how to integrate and manage the
  * [FileChooserDialog], including handling file selection and cancellation events,
  * within a Composable UI.
- *
- * @sample deskit.dialogs.file.filechooser.FileChooserDialogSample
  */
 @Composable
 fun FileChooserDialogSample(){
